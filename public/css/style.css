@@ -277,52 +277,91 @@ body.cinematic-theme {
   gap: 14px;
   text-decoration: none;
   cursor: pointer;
-  perspective: 600px;
+  perspective: 800px;
 }
 
 .hologram-logo-wrap {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
 }
 
 .hologram-svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 12px var(--purple-glow));
+  filter: drop-shadow(0 0 15px var(--purple-glow));
+  transition: filter 0.3s ease;
 }
 
+/* Rotating Orbital Gyroscope Rings */
 .logo-orbit-ring {
   transform-origin: 50px 50px;
-  animation: logoRotate 12s linear infinite;
+  animation: logoRotate 10s linear infinite;
 }
 
 .logo-orbit-ring-reverse {
   transform-origin: 50px 50px;
-  animation: logoRotateReverse 8s linear infinite;
+  animation: logoRotateReverse 7s linear infinite;
 }
 
-.logo-nodes {
+.logo-wave-ring {
   transform-origin: 50px 50px;
-  animation: logoRotate 16s linear infinite;
+  animation: logoRotate 14s linear infinite;
 }
 
-.logo-core-bg {
+/* Equalizer Rays & Sparks */
+.ray {
+  animation: rayPulse 1.8s ease-in-out infinite alternate;
+}
+.ray-1 { animation-delay: 0s; }
+.ray-2 { animation-delay: 0.3s; }
+.ray-3 { animation-delay: 0.6s; }
+.ray-4 { animation-delay: 0.9s; }
+
+@keyframes rayPulse {
+  0% { transform: scale(0.9); opacity: 0.4; }
+  100% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 8px #fff); }
+}
+
+.node-spark {
+  animation: sparkBlink 2.5s infinite alternate;
+}
+.node-spark:nth-child(2) { animation-delay: 0.5s; }
+.node-spark:nth-child(3) { animation-delay: 1s; }
+.node-spark:nth-child(4) { animation-delay: 1.5s; }
+
+@keyframes sparkBlink {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.4); }
+}
+
+/* Crystal Prism & Core */
+.logo-crystal-prism {
   transform-origin: 50px 50px;
-  animation: logoPulse 3s ease-in-out infinite alternate;
+  animation: prismSpin 6s ease-in-out infinite alternate;
+}
+
+.logo-crystal-inner {
+  transform-origin: 50px 50px;
+  animation: prismPulse 3s ease-in-out infinite alternate;
 }
 
 .logo-core-glyph {
   transform-origin: 50px 50px;
-  animation: logoFlicker 4s ease-in-out infinite alternate;
+  animation: glyphEnergy 3.5s ease-in-out infinite alternate;
 }
 
-.logo-center-orb {
-  animation: orbGlow 2s ease-in-out infinite alternate;
+.logo-center-singularity {
+  animation: singularityPulse 1.8s ease-in-out infinite alternate;
+}
+
+.hud-bracket {
+  animation: hudBreathe 4s ease-in-out infinite alternate;
 }
 
 @keyframes logoRotate {
@@ -335,39 +374,73 @@ body.cinematic-theme {
   100% { transform: rotate(0deg); }
 }
 
-@keyframes logoPulse {
-  0% { transform: scale(0.92); opacity: 0.3; }
-  100% { transform: scale(1.08); opacity: 0.6; }
+@keyframes prismSpin {
+  0% { transform: scale(0.95) rotate(-5deg); opacity: 0.35; }
+  100% { transform: scale(1.05) rotate(5deg); opacity: 0.6; }
 }
 
-@keyframes logoFlicker {
-  0%, 100% { filter: drop-shadow(0 0 6px var(--purple-neon)); }
-  50% { filter: drop-shadow(0 0 16px #ffffff); }
+@keyframes prismPulse {
+  0% { transform: scale(0.9); opacity: 0.25; }
+  100% { transform: scale(1.1); opacity: 0.5; }
 }
 
-@keyframes orbGlow {
-  0% { transform: scale(0.8); opacity: 0.7; }
-  100% { transform: scale(1.3); opacity: 1; filter: drop-shadow(0 0 10px #fff); }
+@keyframes glyphEnergy {
+  0%, 100% { filter: drop-shadow(0 0 6px var(--purple-neon)); opacity: 0.9; }
+  50% { filter: drop-shadow(0 0 18px #ffffff); opacity: 1; }
+}
+
+@keyframes singularityPulse {
+  0% { transform: scale(0.7); opacity: 0.7; }
+  100% { transform: scale(1.4); opacity: 1; filter: drop-shadow(0 0 12px #fff); }
+}
+
+@keyframes hudBreathe {
+  0% { opacity: 0.4; }
+  100% { opacity: 0.9; stroke: var(--purple-neon); }
 }
 
 .logo-aura-glow {
   position: absolute;
-  inset: -4px;
+  inset: -6px;
   border-radius: 50%;
   background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
   z-index: -1;
-  opacity: 0.6;
-  filter: blur(8px);
+  opacity: 0.7;
+  filter: blur(10px);
   animation: auraPulse 3s ease-in-out infinite alternate;
 }
 
 @keyframes auraPulse {
   0% { transform: scale(0.85); opacity: 0.4; }
-  100% { transform: scale(1.2); opacity: 0.8; }
+  100% { transform: scale(1.25); opacity: 0.85; }
+}
+
+/* Shockwave Energy Ring */
+.logo-shockwave-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--purple-neon);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.6);
+}
+
+.logo-shockwave-ring.trigger {
+  animation: shockwaveExpand 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes shockwaveExpand {
+  0% { transform: scale(0.6); opacity: 1; border-color: #fff; }
+  100% { transform: scale(2.2); opacity: 0; border-color: var(--purple-neon); }
 }
 
 .brand-container:hover .hologram-logo-wrap {
-  transform: rotateY(25deg) rotateX(-15deg) scale(1.15);
+  transform: rotateY(25deg) rotateX(-12deg) scale(1.18);
+}
+
+.brand-container:hover .hologram-svg {
+  filter: drop-shadow(0 0 24px var(--purple-neon));
 }
 
 .brand-text {
@@ -375,16 +448,46 @@ body.cinematic-theme {
   flex-direction: column;
 }
 
+.brand-name-wrap {
+  position: relative;
+  display: inline-block;
+}
+
 .brand-name {
   font-family: var(--font-heading);
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   font-weight: 900;
-  letter-spacing: 2px;
-  background: linear-gradient(135deg, #ffffff 0%, var(--purple-neon) 60%, var(--cyan-neon) 100%);
+  letter-spacing: 2.5px;
+  background: linear-gradient(135deg, #ffffff 0%, var(--purple-neon) 55%, var(--cyan-neon) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 20px var(--purple-glow);
+  text-shadow: 0 0 25px var(--purple-glow);
+  display: block;
+}
+
+.brand-name-glitch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  color: var(--cyan-neon);
+  clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.brand-container:hover .brand-name-glitch {
+  animation: brandGlitch 0.4s ease forwards;
+}
+
+@keyframes brandGlitch {
+  0% { opacity: 0.8; transform: translate(-2px, 1px); }
+  50% { opacity: 0.5; transform: translate(2px, -1px); }
+  100% { opacity: 0; transform: translate(0, 0); }
 }
 
 .brand-badge-row {
@@ -400,9 +503,12 @@ body.cinematic-theme {
   letter-spacing: 1px;
   color: var(--purple-neon);
   background: rgba(217, 70, 239, 0.12);
-  padding: 1px 6px;
+  padding: 1px 7px;
   border-radius: 4px;
-  border: 1px solid rgba(217, 70, 239, 0.3);
+  border: 1px solid rgba(217, 70, 239, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .brand-live-indicator {
@@ -412,6 +518,163 @@ body.cinematic-theme {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+/* ==========================================================================
+   HERO 3D HOLOGRAPHIC QUANTUM CENTERPIECE
+   ========================================================================== */
+.hero-hologram-centerpiece {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 24px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  animation: floatLevitate 5s ease-in-out infinite alternate;
+}
+
+@keyframes floatLevitate {
+  0% { transform: translateY(0px) rotateY(0deg); }
+  50% { transform: translateY(-10px) rotateY(8deg); }
+  100% { transform: translateY(6px) rotateY(-8deg); }
+}
+
+.hero-orb-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px dashed;
+  pointer-events: none;
+}
+
+.ring-outer {
+  width: 136px;
+  height: 136px;
+  border-color: var(--purple-neon);
+  opacity: 0.7;
+  animation: gyroSpinOuter 12s linear infinite;
+}
+
+.ring-middle {
+  width: 110px;
+  height: 110px;
+  border-color: var(--cyan-neon);
+  border-style: dotted;
+  opacity: 0.8;
+  animation: gyroSpinMiddle 8s linear infinite;
+}
+
+.ring-inner {
+  width: 86px;
+  height: 86px;
+  border-color: #ffffff;
+  opacity: 0.5;
+  animation: gyroSpinInner 6s linear infinite;
+}
+
+@keyframes gyroSpinOuter {
+  0% { transform: rotateX(65deg) rotateY(0deg) rotateZ(0deg); }
+  100% { transform: rotateX(65deg) rotateY(0deg) rotateZ(360deg); }
+}
+
+@keyframes gyroSpinMiddle {
+  0% { transform: rotateX(-55deg) rotateY(20deg) rotateZ(360deg); }
+  100% { transform: rotateX(-55deg) rotateY(20deg) rotateZ(0deg); }
+}
+
+@keyframes gyroSpinInner {
+  0% { transform: rotateX(0deg) rotateY(70deg) rotateZ(0deg); }
+  100% { transform: rotateX(0deg) rotateY(70deg) rotateZ(360deg); }
+}
+
+.hero-orb-core {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-core-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px var(--purple-neon));
+}
+
+.hero-prism-hex {
+  transform-origin: 60px 60px;
+  animation: logoRotate 16s linear infinite;
+}
+
+.hero-prism-inner {
+  transform-origin: 60px 60px;
+  animation: prismPulse 3s ease-in-out infinite alternate;
+}
+
+.hero-glyph-v {
+  animation: glyphEnergy 3s ease-in-out infinite alternate;
+}
+
+.hero-singularity {
+  animation: singularityPulse 1.6s ease-in-out infinite alternate;
+}
+
+/* Audio Equalizer Spectrum Arc */
+.hero-audio-spectrum {
+  position: absolute;
+  bottom: -6px;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 24px;
+  z-index: 3;
+}
+
+.spectrum-bar {
+  width: 3.5px;
+  background: linear-gradient(to top, var(--purple-neon), var(--cyan-neon));
+  border-radius: 2px;
+  animation: spectrumDance 1.2s ease-in-out infinite alternate;
+}
+
+.bar-1 { height: 8px; animation-delay: 0.1s; }
+.bar-2 { height: 16px; animation-delay: 0.3s; }
+.bar-3 { height: 22px; animation-delay: 0.2s; }
+.bar-4 { height: 12px; animation-delay: 0.5s; }
+.bar-5 { height: 20px; animation-delay: 0.4s; }
+.bar-6 { height: 14px; animation-delay: 0.6s; }
+.bar-7 { height: 18px; animation-delay: 0.25s; }
+.bar-8 { height: 10px; animation-delay: 0.45s; }
+
+@keyframes spectrumDance {
+  0% { transform: scaleY(0.4); opacity: 0.5; }
+  100% { transform: scaleY(1.4); opacity: 1; filter: drop-shadow(0 0 6px var(--cyan-neon)); }
+}
+
+.hero-orb-aura {
+  position: absolute;
+  inset: -15px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+  z-index: 0;
+  opacity: 0.65;
+  filter: blur(18px);
+  animation: auraPulse 4s ease-in-out infinite alternate;
+}
+
+.hero-hologram-centerpiece:hover {
+  animation-play-state: paused;
+  transform: scale(1.15);
+}
+
+.hero-hologram-centerpiece:hover .hero-orb-aura {
+  opacity: 1;
+  filter: blur(24px);
 }
 
 .pulse-dot-sm {

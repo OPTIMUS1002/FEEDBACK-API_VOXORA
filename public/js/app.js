@@ -74,20 +74,64 @@ function init3DTilt() {
 }
 
 /* ==========================================================================
-   2. HOLOGRAPHIC LOGO INTERACTIVITY & SOUND
+   2. HOLOGRAPHIC LOGO INTERACTIVITY, SHOCKWAVES & SOUND
    ========================================================================== */
 function initHologramLogo() {
   const logoBtn = document.getElementById('brand-logo-btn');
-  if (!logoBtn) return;
+  const navShockwave = document.getElementById('nav-shockwave');
+  const heroSphere = document.getElementById('hero-hologram-sphere');
 
-  logoBtn.addEventListener('mouseenter', () => {
-    playSound('hover');
-  });
+  // Navbar Logo Interaction
+  if (logoBtn) {
+    logoBtn.addEventListener('mouseenter', () => {
+      playSound('hover');
+    });
 
-  logoBtn.addEventListener('click', () => {
-    playSound('quantum');
-    showToast('⚡ Voxora Quantum Engine Active', 'success');
-  });
+    logoBtn.addEventListener('click', (e) => {
+      playSound('quantum');
+      
+      // Trigger shockwave ring
+      if (navShockwave) {
+        navShockwave.classList.remove('trigger');
+        void navShockwave.offsetWidth; // Force reflow
+        navShockwave.classList.add('trigger');
+      }
+
+      showToast('⚡ Quantum Resonance Synchronized', 'success');
+    });
+  }
+
+  // Hero Centerpiece 3D Magnetic Tracking & Shockwave
+  if (heroSphere) {
+    heroSphere.addEventListener('mousemove', (e) => {
+      const rect = heroSphere.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+
+      heroSphere.style.transform = `perspective(800px) rotateY(${x * 0.35}deg) rotateX(${-y * 0.35}deg) scale(1.18)`;
+    });
+
+    heroSphere.addEventListener('mouseleave', () => {
+      heroSphere.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) scale(1)';
+    });
+
+    heroSphere.addEventListener('click', () => {
+      playSound('quantum');
+      
+      // Pulse spectrum bars
+      const bars = heroSphere.querySelectorAll('.spectrum-bar');
+      bars.forEach(b => {
+        b.style.transform = 'scaleY(2.2)';
+        b.style.filter = 'drop-shadow(0 0 15px #ffffff)';
+        setTimeout(() => {
+          b.style.transform = '';
+          b.style.filter = '';
+        }, 500);
+      });
+
+      showToast('🔮 Quantum Singularity Transmitting Live Audio Waves!', 'info');
+    });
+  }
 }
 
 /* ==========================================================================
