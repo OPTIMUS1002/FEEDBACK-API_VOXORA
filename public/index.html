@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOXORA — Cinematic Student Feedback & Analytics</title>
+  <meta name="description" content="Next-generation student feedback platform with cinematic 3D visual aesthetic, real-time analytics, and REST API.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="cinematic-theme">
+  
+  <!-- 3D Glowing Ambient Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Ambient Glowing Orbs -->
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
+  <div class="ambient-orb orb-3"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar-wrapper">
+    <nav class="navbar glass-panel">
+      <div class="brand-container">
+        <div class="brand-logo-icon">
+          <i class="fa-solid fa-bolt-lightning"></i>
+          <span class="logo-glow"></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">VOXORA</span>
+          <span class="brand-badge">API v2.0</span>
+        </div>
+      </div>
+
+      <div class="nav-links">
+        <a href="#dashboard" class="nav-link active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="#submit-feedback" class="nav-link"><i class="fa-solid fa-pen-nib"></i> Give Feedback</a>
+        <a href="#feedbacks-wall" class="nav-link"><i class="fa-solid fa-layer-group"></i> Live Feed</a>
+        <a href="#api-docs" class="nav-link"><i class="fa-solid fa-code"></i> API Explorer</a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="#submit-feedback" class="btn btn-primary btn-glow">
+          <span>Submit Review</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        <span>STUDENT VOICE INTELLIGENCE ENGINE</span>
+      </div>
+      
+      <h1 class="hero-title">
+        Empower Learning with <br>
+        <span class="text-gradient">Cinematic Feedback</span>
+      </h1>
+      
+      <p class="hero-subtitle">
+        A state-of-the-art feedback ecosystem powered by real-time analytics, 
+        interactive 3D physics, and high-performance REST APIs.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#submit-feedback" class="btn btn-hero-primary">
+          <i class="fa-solid fa-sparkles"></i> Give Feedback
+        </a>
+        <a href="#api-docs" class="btn btn-hero-secondary">
+          <i class="fa-solid fa-terminal"></i> Explore API Endpoints
+        </a>
+      </div>
+    </section>
+
+    <!-- Analytics Dashboard Stats -->
+    <section class="dashboard-section" id="dashboard">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-tag">LIVE METRICS</span>
+          <h2 class="section-title">Performance & Sentiment Matrix</h2>
+        </div>
+        <button class="btn btn-refresh" id="refresh-stats-btn" title="Refresh Live Data">
+          <i class="fa-solid fa-rotate"></i> Sync Data
+        </button>
+      </div>
+
+      <div class="stats-grid">
+        <!-- Card 1: Total Feedbacks -->
+        <div class="stat-card glass-panel tilt-card" data-tilt>
+          <div class="stat-icon-wrap purple-glow">
+            <i class="fa-solid fa-comments"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Submissions</span>
+            <div class="stat-number-wrap">
+              <span class="stat-value" id="stat-total-count">--</span>
+              <span class="stat-trend positive"><i class="fa-solid fa-arrow-trend-up"></i> Live</span>
+            </div>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Card 2: Overall Rating -->
+        <div class="stat-card glass-panel tilt-card" data-tilt>
+          <div class="stat-icon-wrap violet-glow">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Overall Average Rating</span>
+            <div class="stat-number-wrap">
+              <span class="stat-value" id="stat-avg-rating">--</span>
+              <span class="stat-max">/ 5.0</span>
+            </div>
+          </div>
+          <div class="rating-stars-preview" id="stat-stars-render">
+            ★★★★★
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Card 3: Top Course -->
+        <div class="stat-card glass-panel tilt-card" data-tilt>
+          <div class="stat-icon-wrap white-glow">
+            <i class="fa-solid fa-award"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Highest Rated Course</span>
+            <div class="stat-number-wrap">
+              <span class="stat-value highlight" id="stat-top-course">--</span>
+            </div>
+          </div>
+          <span class="stat-subtext" id="stat-top-course-desc">Calculating matrix...</span>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Card 4: Active Courses -->
+        <div class="stat-card glass-panel tilt-card" data-tilt>
+          <div class="stat-icon-wrap cyan-glow">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Courses Evaluated</span>
+            <div class="stat-number-wrap">
+              <span class="stat-value" id="stat-courses-count">--</span>
+            </div>
+          </div>
+          <span class="stat-subtext">Across departments</span>
+          <div class="card-shine"></div>
+        </div>
+      </div>
+
+      <!-- Rating Breakdown & Analytics Row -->
+      <div class="analytics-row">
+        <!-- Rating Distribution -->
+        <div class="analytics-card glass-panel tilt-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-chart-simple text-purple"></i> Rating Distribution</h3>
+            <span class="badge-pill">Satisfaction Scale</span>
+          </div>
+          <div class="distribution-bars" id="distribution-bars-container">
+            <!-- Dynamic 5 to 1 star bars -->
+            <div class="dist-row">
+              <span class="dist-star">5 ★</span>
+              <div class="dist-track"><div class="dist-fill fill-5" id="bar-5" style="width: 0%"></div></div>
+              <span class="dist-count" id="count-5">0</span>
+            </div>
+            <div class="dist-row">
+              <span class="dist-star">4 ★</span>
+              <div class="dist-track"><div class="dist-fill fill-4" id="bar-4" style="width: 0%"></div></div>
+              <span class="dist-count" id="count-4">0</span>
+            </div>
+            <div class="dist-row">
+              <span class="dist-star">3 ★</span>
+              <div class="dist-track"><div class="dist-fill fill-3" id="bar-3" style="width: 0%"></div></div>
+              <span class="dist-count" id="count-3">0</span>
+            </div>
+            <div class="dist-row">
+              <span class="dist-star">2 ★</span>
+              <div class="dist-track"><div class="dist-fill fill-2" id="bar-2" style="width: 0%"></div></div>
+              <span class="dist-count" id="count-2">0</span>
+            </div>
+            <div class="dist-row">
+              <span class="dist-star">1 ★</span>
+              <div class="dist-track"><div class="dist-fill fill-1" id="bar-1" style="width: 0%"></div></div>
+              <span class="dist-count" id="count-1">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course Breakdown -->
+        <div class="analytics-card glass-panel tilt-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-book-bookmark text-purple"></i> Course Leaderboard</h3>
+            <span class="badge-pill">Ranked by Volume</span>
+          </div>
+          <div class="course-list-wrap" id="course-leaderboard-container">
+            <div class="loading-state">Loading courses...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feedback Submission Form Section -->
+    <section class="submission-section" id="submit-feedback">
+      <div class="section-header center">
+        <span class="section-tag">SUBMIT YOUR VOICE</span>
+        <h2 class="section-title">Shape the Future of Your Courses</h2>
+        <p class="section-desc">Your anonymous & authenticated insights drive curriculum transformation.</p>
+      </div>
+
+      <div class="form-wrapper">
+        <div class="form-card glass-panel tilt-card" id="feedback-form-card">
+          <form id="feedback-form">
+            
+            <div class="form-row">
+              <!-- Student Name -->
+              <div class="form-group">
+                <label for="student-name-input">
+                  <i class="fa-regular fa-user"></i> Student Name / Alias <span class="required">*</span>
+                </label>
+                <div class="input-glow-wrap">
+                  <input 
+                    type="text" 
+                    id="student-name-input" 
+                    placeholder="e.g. Alex Morgan" 
+                    required
+                    autocomplete="name"
+                  >
+                  <span class="input-focus-border"></span>
+                </div>
+              </div>
+
+              <!-- Course Code -->
+              <div class="form-group">
+                <label for="course-code-input">
+                  <i class="fa-solid fa-code-branch"></i> Course Code <span class="required">*</span>
+                </label>
+                <div class="input-glow-wrap">
+                  <input 
+                    type="text" 
+                    id="course-code-input" 
+                    placeholder="e.g. CS101, AI402, WEB301" 
+                    required
+                    autocomplete="off"
+                    style="text-transform: uppercase;"
+                  >
+                  <span class="input-focus-border"></span>
+                </div>
+                <!-- Quick Course Tags -->
+                <div class="quick-tags">
+                  <span class="tag-title">Suggestions:</span>
+                  <button type="button" class="quick-tag" data-code="CS101">CS101</button>
+                  <button type="button" class="quick-tag" data-code="AI402">AI402</button>
+                  <button type="button" class="quick-tag" data-code="WEB301">WEB301</button>
+                  <button type="button" class="quick-tag" data-code="DS200">DS200</button>
+                  <button type="button" class="quick-tag" data-code="UX102">UX102</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3D Star Rating Selector -->
+            <div class="form-group rating-form-group">
+              <label>
+                <i class="fa-solid fa-star-half-stroke"></i> Experience Rating <span class="required">*</span>
+              </label>
+              
+              <div class="interactive-rating-container">
+                <div class="stars-3d-box" id="star-rating-box">
+                  <button type="button" class="star-btn" data-rating="1" title="1 Star - Poor">
+                    <i class="fa-solid fa-star"></i>
+                  </button>
+                  <button type="button" class="star-btn" data-rating="2" title="2 Stars - Needs Work">
+                    <i class="fa-solid fa-star"></i>
+                  </button>
+                  <button type="button" class="star-btn" data-rating="3" title="3 Stars - Average">
+                    <i class="fa-solid fa-star"></i>
+                  </button>
+                  <button type="button" class="star-btn" data-rating="4" title="4 Stars - Very Good">
+                    <i class="fa-solid fa-star"></i>
+                  </button>
+                  <button type="button" class="star-btn active" data-rating="5" title="5 Stars - Outstanding">
+                    <i class="fa-solid fa-star"></i>
+                  </button>
+                </div>
+                <input type="hidden" id="rating-value" value="5">
+                
+                <div class="rating-feedback-badge" id="rating-sentiment-badge">
+                  <span class="badge-icon">✨</span>
+                  <span class="badge-text">5 / 5 — Outstanding Experience</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comments / Detailed Review -->
+            <div class="form-group">
+              <div class="label-with-counter">
+                <label for="feedback-comments-input">
+                  <i class="fa-regular fa-message"></i> Detailed Feedback & Suggestions
+                </label>
+                <span class="char-counter" id="char-counter">0 / 500</span>
+              </div>
+              <div class="input-glow-wrap">
+                <textarea 
+                  id="feedback-comments-input" 
+                  rows="4" 
+                  maxlength="500"
+                  placeholder="Share highlights of the lectures, practical lab quality, instructors, assignments, or areas for improvement..."
+                ></textarea>
+                <span class="input-focus-border"></span>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-submit-wrap">
+              <button type="submit" class="btn btn-submit-glow" id="submit-btn">
+                <span class="btn-text">
+                  <i class="fa-solid fa-paper-plane"></i> Transmit Feedback
+                </span>
+                <div class="btn-loader" style="display: none;">
+                  <i class="fa-solid fa-circle-notch fa-spin"></i> Processing...
+                </div>
+              </button>
+            </div>
+
+          </form>
+          <div class="card-shine"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Feedbacks Wall Section -->
+    <section class="feedbacks-section" id="feedbacks-wall">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-tag">LIVE WALL</span>
+          <h2 class="section-title">Student Experiences Feed</h2>
+        </div>
+        
+        <div class="feed-controls">
+          <!-- Search Bar -->
+          <div class="search-input-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="feed-search-input" placeholder="Search student, course, keywords...">
+            <button type="button" id="clear-search-btn" class="clear-btn" style="display:none;">&times;</button>
+          </div>
+
+          <!-- Course Filter Dropdown -->
+          <div class="select-filter-box">
+            <select id="feed-course-filter">
+              <option value="ALL">All Courses</option>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <!-- Sort Dropdown -->
+          <div class="select-filter-box">
+            <select id="feed-sort-select">
+              <option value="newest">Newest First</option>
+              <option value="highest_rating">Highest Rating (5★ → 1★)</option>
+              <option value="lowest_rating">Lowest Rating (1★ → 5★)</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedbacks Cards Grid -->
+      <div class="feedbacks-grid" id="feedbacks-grid">
+        <!-- Dynamically injected feedback cards -->
+        <div class="loading-state">
+          <i class="fa-solid fa-circle-notch fa-spin"></i> Fetching live student reviews...
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive API Explorer / Documentation Section -->
+    <section class="api-section" id="api-docs">
+      <div class="section-header center">
+        <span class="section-tag">DEVELOPER ECOSYSTEM</span>
+        <h2 class="section-title">Interactive REST API Explorer</h2>
+        <p class="section-desc">Directly test endpoints or integrate Voxora into your educational apps.</p>
+      </div>
+
+      <div class="api-explorer-card glass-panel tilt-card">
+        <div class="api-tabs">
+          <button class="api-tab active" data-endpoint="getAll">GET /api/feedback</button>
+          <button class="api-tab" data-endpoint="getStats">GET /api/feedback/stats/summary</button>
+          <button class="api-tab" data-endpoint="create">POST /api/feedback</button>
+          <button class="api-tab" data-endpoint="getSingle">GET /api/feedback/:id</button>
+        </div>
+
+        <div class="api-content-box">
+          <div class="endpoint-header">
+            <span class="http-method-badge" id="api-method-badge">GET</span>
+            <span class="endpoint-url" id="api-url-display">/api/feedback</span>
+            <button class="btn btn-copy-curl" id="copy-curl-btn" title="Copy cURL Command">
+              <i class="fa-regular fa-copy"></i> Copy cURL
+            </button>
+            <button class="btn btn-execute-api" id="execute-api-btn">
+              <i class="fa-solid fa-play"></i> Send Request
+            </button>
+          </div>
+
+          <div class="api-console">
+            <div class="console-header">
+              <span>Response Status: <strong id="api-status-code">200 OK</strong></span>
+              <span id="api-latency">⚡ Live</span>
+            </div>
+            <pre class="json-code-viewer"><code id="api-response-viewer">// Click "Send Request" to test this endpoint live...</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Edit Feedback Modal -->
+  <div class="modal-overlay" id="edit-modal" style="display: none;">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-pen-to-square text-purple"></i> Edit Student Feedback</h3>
+        <button class="modal-close-btn" id="close-edit-modal">&times;</button>
+      </div>
+      <form id="edit-feedback-form">
+        <input type="hidden" id="edit-feedback-id">
+
+        <div class="form-group">
+          <label for="edit-student-name">Student Name</label>
+          <input type="text" id="edit-student-name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-course-code">Course Code</label>
+          <input type="text" id="edit-course-code" required style="text-transform: uppercase;">
+        </div>
+
+        <div class="form-group">
+          <label>Rating (1 to 5)</label>
+          <div class="stars-3d-box modal-stars" id="edit-stars-box">
+            <button type="button" class="modal-star-btn" data-rating="1">★</button>
+            <button type="button" class="modal-star-btn" data-rating="2">★</button>
+            <button type="button" class="modal-star-btn" data-rating="3">★</button>
+            <button type="button" class="modal-star-btn" data-rating="4">★</button>
+            <button type="button" class="modal-star-btn" data-rating="5">★</button>
+          </div>
+          <input type="hidden" id="edit-rating-value" value="5">
+        </div>
+
+        <div class="form-group">
+          <label for="edit-comments">Comments</label>
+          <textarea id="edit-comments" rows="3"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancel-edit-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-glow" id="save-edit-btn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="delete-modal" style="display: none;">
+    <div class="modal-card glass-panel modal-card-sm">
+      <div class="modal-header">
+        <h3 class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Delete Feedback</h3>
+        <button class="modal-close-btn" id="close-delete-modal">&times;</button>
+      </div>
+      <p class="modal-desc">Are you sure you want to permanently delete this student feedback record? This action cannot be undone.</p>
+      <input type="hidden" id="delete-feedback-id">
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-delete-btn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirm-delete-btn">
+          <i class="fa-solid fa-trash"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer-wrapper">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="brand-name">VOXORA</span>
+        <p>Ultra-responsive Student Feedback Platform & REST API.</p>
+      </div>
+      <div class="footer-links">
+        <span>Designed with Purple, White & Obsidian Glow</span>
+        <span>•</span>
+        <span>100% Vercel Serverless Ready</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript App -->
+  <script src="js/app.js"></script>
+</body>
+</html>
