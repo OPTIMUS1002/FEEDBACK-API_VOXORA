@@ -1,17 +1,22 @@
 /**
- * VOXORA PRO — Next-Gen Student Feedback & Intelligence Platform
- * Features: AI Sentiment Analysis, Web Audio Sci-Fi FX, Multi-Themes, CSV Export, Admin PIN
+ * VOXORA QUANTUM v3.0 — Next-Gen Student Feedback & Intelligence Platform
+ * Features: Holographic Logo, 5 Themes, Real-time AI Sentiment, Sound FX,
+ * Upvotes, Faculty Replies, CSV/JSON Export, Grid/Table Modes, REST Explorer
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initCursorFollower();
   initAmbientCanvas();
   init3DTilt();
+  initHologramLogo();
   initThemeSystem();
   initSoundSystem();
   initAdminMode();
   initRatingSystem();
+  initTagSelector();
   initFormAndSentiment();
   initFiltersAndSearch();
+  initViewModes();
   initModals();
   initExportFeatures();
   initApiExplorer();
@@ -30,9 +35,65 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   1. 3D AMBIENT PARTICLES CANVAS
+   1. CURSOR FOLLOWER & 3D TILT PHYSICS
    ========================================================================== */
-let canvasColor = '#a855f7';
+function initCursorFollower() {
+  const cursorGlow = document.getElementById('cursor-glow');
+  if (!cursorGlow) return;
+
+  window.addEventListener('mousemove', (e) => {
+    cursorGlow.style.left = `${e.clientX}px`;
+    cursorGlow.style.top = `${e.clientY}px`;
+  });
+}
+
+function init3DTilt() {
+  const cards = document.querySelectorAll('.tilt-card, [data-tilt]');
+
+  cards.forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = ((y - centerY) / centerY) * -5;
+      const rotateY = ((x - centerX) / centerX) * 5;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
+    });
+  });
+}
+
+/* ==========================================================================
+   2. HOLOGRAPHIC LOGO INTERACTIVITY & SOUND
+   ========================================================================== */
+function initHologramLogo() {
+  const logoBtn = document.getElementById('brand-logo-btn');
+  if (!logoBtn) return;
+
+  logoBtn.addEventListener('mouseenter', () => {
+    playSound('hover');
+  });
+
+  logoBtn.addEventListener('click', () => {
+    playSound('quantum');
+    showToast('⚡ Voxora Quantum Engine Active', 'success');
+  });
+}
+
+/* ==========================================================================
+   3. 3D AMBIENT PARTICLES CANVAS
+   ========================================================================== */
+let canvasColor = '#d946ef';
 
 function initAmbientCanvas() {
   const canvas = document.getElementById('ambient-canvas');
@@ -48,16 +109,16 @@ function initAmbientCanvas() {
   });
 
   const particles = [];
-  const particleCount = Math.min(width > 768 ? 60 : 30, 80);
+  const particleCount = Math.min(width > 768 ? 65 : 30, 85);
 
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      radius: Math.random() * 2 + 0.5,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      alpha: Math.random() * 0.5 + 0.2
+      radius: Math.random() * 2 + 0.6,
+      vx: (Math.random() - 0.5) * 0.45,
+      vy: (Math.random() - 0.5) * 0.45,
+      alpha: Math.random() * 0.55 + 0.2
     });
   }
 
@@ -85,12 +146,12 @@ function initAmbientCanvas() {
       for (let j = i + 1; j < particles.length; j++) {
         const p2 = particles[j];
         const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-        if (dist < 110) {
+        if (dist < 115) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
           ctx.strokeStyle = canvasColor;
-          ctx.globalAlpha = (1 - dist / 110) * 0.15;
+          ctx.globalAlpha = (1 - dist / 115) * 0.18;
           ctx.lineWidth = 0.6;
           ctx.stroke();
         }
@@ -102,49 +163,25 @@ function initAmbientCanvas() {
 }
 
 /* ==========================================================================
-   2. 3D TILT PHYSICS
-   ========================================================================== */
-function init3DTilt() {
-  const cards = document.querySelectorAll('.tilt-card, [data-tilt]');
-
-  cards.forEach((card) => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-
-      const rotateX = ((y - centerY) / centerY) * -6;
-      const rotateY = ((x - centerX) / centerX) * 6;
-
-      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
-    });
-
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)`;
-    });
-  });
-}
-
-/* ==========================================================================
-   3. MULTI-THEME SWITCHER
+   4. 5 THEMES SYSTEM
    ========================================================================== */
 function initThemeSystem() {
   const themeBtn = document.getElementById('theme-btn');
   const themeMenu = document.getElementById('theme-menu');
   const themeOpts = document.querySelectorAll('.theme-opt');
 
-  const savedTheme = localStorage.getItem('voxora_theme') || 'purple';
-  applyTheme(savedTheme);
+  const themeColors = {
+    purple: '#d946ef',
+    cyan: '#38bdf8',
+    emerald: '#34d399',
+    solaris: '#fbbf24',
+    glacial: '#38bdf8'
+  };
 
   themeBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
+    playSound('click');
     themeMenu?.classList.toggle('show');
-    playSound('action');
   });
 
   document.addEventListener('click', () => {
@@ -154,59 +191,45 @@ function initThemeSystem() {
   themeOpts.forEach((opt) => {
     opt.addEventListener('click', () => {
       const theme = opt.dataset.setTheme;
-      applyTheme(theme);
+      document.documentElement.setAttribute('data-theme', theme);
+      themeOpts.forEach((o) => o.classList.remove('active'));
+      opt.classList.add('active');
+
+      canvasColor = themeColors[theme] || '#d946ef';
+      playSound('action');
+      showToast(`Theme switched: ${opt.innerText}`, 'info');
       themeMenu?.classList.remove('show');
-      playSound('star', 3);
-      showToast(`Theme switched to ${opt.textContent}`, 'info');
     });
   });
-
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('voxora_theme', theme);
-
-    themeOpts.forEach((o) => o.classList.toggle('active', o.dataset.setTheme === theme));
-
-    if (theme === 'cyan') canvasColor = '#38bdf8';
-    else if (theme === 'emerald') canvasColor = '#10b981';
-    else canvasColor = '#a855f7';
-  }
 }
 
 /* ==========================================================================
-   4. SCI-FI WEB AUDIO SOUND SYSTEM
+   5. SCI-FI SOUND FX ENGINE (Web Audio API)
    ========================================================================== */
-let soundEnabled = true;
 let audioCtx = null;
+let soundEnabled = true;
 
 function initSoundSystem() {
   const toggleBtn = document.getElementById('sound-toggle-btn');
-  const savedSound = localStorage.getItem('voxora_sound');
-  soundEnabled = savedSound !== 'disabled';
-  updateSoundBtn();
+  if (!toggleBtn) return;
 
-  toggleBtn?.addEventListener('click', () => {
+  toggleBtn.addEventListener('click', () => {
     soundEnabled = !soundEnabled;
-    localStorage.setItem('voxora_sound', soundEnabled ? 'enabled' : 'disabled');
-    updateSoundBtn();
-    if (soundEnabled) {
-      playSound('star', 4);
-      showToast('Sci-Fi Sound FX Enabled', 'info');
-    } else {
-      showToast('Sound FX Muted', 'info');
-    }
-  });
-
-  function updateSoundBtn() {
-    if (!toggleBtn) return;
     toggleBtn.classList.toggle('active', soundEnabled);
     toggleBtn.innerHTML = soundEnabled
       ? '<i class="fa-solid fa-volume-high"></i>'
       : '<i class="fa-solid fa-volume-xmark"></i>';
-  }
+    
+    if (soundEnabled) {
+      playSound('success');
+      showToast('Audio FX Enabled', 'info');
+    } else {
+      showToast('Audio FX Muted', 'info');
+    }
+  });
 }
 
-function playSound(type, level = 1) {
+function playSound(type) {
   if (!soundEnabled) return;
   try {
     if (!audioCtx) {
@@ -223,101 +246,123 @@ function playSound(type, level = 1) {
 
     const now = audioCtx.currentTime;
 
-    if (type === 'star') {
-      const freqs = [350, 440, 523.25, 659.25, 783.99];
-      const freq = freqs[Math.min(level - 1, 4)] || 440;
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now);
-      osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + 0.12);
-      gain.gain.setValueAtTime(0.08, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-      osc.start(now);
-      osc.stop(now + 0.2);
-    } else if (type === 'submit') {
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(440, now);
-      osc.frequency.setValueAtTime(554.37, now + 0.1);
-      osc.frequency.setValueAtTime(659.25, now + 0.2);
-      osc.frequency.setValueAtTime(880, now + 0.3);
-      gain.gain.setValueAtTime(0.12, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-      osc.start(now);
-      osc.stop(now + 0.6);
-    } else if (type === 'action') {
+    if (type === 'click') {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(600, now);
-      osc.frequency.exponentialRampToValueAtTime(300, now + 0.08);
-      gain.gain.setValueAtTime(0.05, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.frequency.exponentialRampToValueAtTime(300, now + 0.05);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
       osc.start(now);
-      osc.stop(now + 0.08);
+      osc.stop(now + 0.05);
+    } else if (type === 'hover') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(450, now);
+      osc.frequency.linearRampToValueAtTime(550, now + 0.04);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.linearRampToValueAtTime(0.005, now + 0.04);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    } else if (type === 'like') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(520, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+      osc.start(now);
+      osc.stop(now + 0.12);
+    } else if (type === 'success') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.2);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
+    } else if (type === 'action' || type === 'quantum') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(300, now);
+      osc.frequency.linearRampToValueAtTime(650, now + 0.15);
+      gain.gain.setValueAtTime(0.14, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+      osc.start(now);
+      osc.stop(now + 0.15);
+    } else if (type === 'error') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.linearRampToValueAtTime(140, now + 0.2);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
     }
-  } catch (e) {
-    // Silent fail for audio restrictions
+  } catch (err) {
+    // AudioContext silently ignored on strict browser autoplay
   }
 }
 
 /* ==========================================================================
-   5. ADMIN / INSTRUCTOR MODE (PIN PROTECTION)
+   6. ADMIN MODE & PRIVILEGES
    ========================================================================== */
 let isAdminMode = false;
-const ADMIN_PIN = '1234';
+const DEFAULT_PIN = '1234';
 
 function initAdminMode() {
   const adminBtn = document.getElementById('admin-mode-btn');
-  const pinModal = document.getElementById('admin-pin-modal');
-  const pinInput = document.getElementById('admin-pin-input');
-  const submitPinBtn = document.getElementById('submit-pin-btn');
-  const cancelPinBtn = document.getElementById('cancel-pin-btn');
+  const adminModal = document.getElementById('admin-pin-modal');
   const closePinModal = document.getElementById('close-pin-modal');
+  const cancelPinBtn = document.getElementById('cancel-pin-btn');
+  const submitPinBtn = document.getElementById('submit-pin-btn');
+  const pinInput = document.getElementById('admin-pin-input');
 
   adminBtn?.addEventListener('click', () => {
-    playSound('action');
     if (isAdminMode) {
       isAdminMode = false;
-      adminBtn.classList.remove('admin-active');
-      showToast('Admin Mode Deactivated.', 'info');
-      fetchFeedbacks();
+      document.body.classList.remove('admin-mode-active');
+      adminBtn.classList.remove('active');
+      playSound('action');
+      showToast('Admin mode deactivated', 'info');
+      renderFeedbacksList(currentFeedbacks);
     } else {
-      pinModal.style.display = 'flex';
-      if (pinInput) {
-        pinInput.value = '';
-        pinInput.focus();
-      }
+      playSound('click');
+      if (adminModal) adminModal.style.display = 'flex';
+      pinInput?.focus();
     }
   });
 
-  function unlockAdmin() {
-    if (pinInput?.value === ADMIN_PIN) {
+  const closeModal = () => {
+    if (adminModal) adminModal.style.display = 'none';
+    if (pinInput) pinInput.value = '';
+  };
+
+  closePinModal?.addEventListener('click', closeModal);
+  cancelPinBtn?.addEventListener('click', closeModal);
+
+  submitPinBtn?.addEventListener('click', () => {
+    const enteredPin = pinInput?.value.trim();
+    if (enteredPin === DEFAULT_PIN) {
       isAdminMode = true;
-      adminBtn?.classList.add('admin-active');
-      pinModal.style.display = 'none';
-      playSound('submit');
-      showToast('🔓 Admin Privileges Unlocked!', 'success');
-      fetchFeedbacks();
+      document.body.classList.add('admin-mode-active');
+      adminBtn?.classList.add('active');
+      closeModal();
+      playSound('success');
+      showToast('Instructor Privileges Activated!', 'success');
+      renderFeedbacksList(currentFeedbacks);
     } else {
-      showToast('❌ Incorrect PIN. Default is 1234', 'error');
+      playSound('error');
+      showToast('Incorrect PIN. Try 1234', 'error');
     }
-  }
-
-  submitPinBtn?.addEventListener('click', unlockAdmin);
-  pinInput?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') unlockAdmin();
   });
-
-  cancelPinBtn?.addEventListener('click', () => (pinModal.style.display = 'none'));
-  closePinModal?.addEventListener('click', () => (pinModal.style.display = 'none'));
 }
 
 /* ==========================================================================
-   6. 3D STAR RATING SELECTOR
+   7. 3D STAR RATING & TOPIC TAG SELECTOR
    ========================================================================== */
-const ratingSentiments = {
-  1: { icon: '⚠️', text: '1 / 5 — Poor Experience' },
-  2: { icon: '👎', text: '2 / 5 — Needs Significant Improvement' },
-  3: { icon: '⚖️', text: '3 / 5 — Average & Satisfactory' },
-  4: { icon: '👍', text: '4 / 5 — Great & Engaging Course' },
-  5: { icon: '✨', text: '5 / 5 — Outstanding & Highly Recommended' }
+const ratingDescriptions = {
+  1: { icon: '⚠️', text: '1 / 5 — Needs Substantial Improvement' },
+  2: { icon: '🛠️', text: '2 / 5 — Below Expectations' },
+  3: { icon: '⚖️', text: '3 / 5 — Average Experience' },
+  4: { icon: '🌟', text: '4 / 5 — Very Good Experience' },
+  5: { icon: '✨', text: '5 / 5 — Outstanding Experience' }
 };
 
 function initRatingSystem() {
@@ -331,683 +376,869 @@ function initRatingSystem() {
       btn.classList.toggle('active', btnRating <= rating);
     });
 
-    if (sentimentBadge && ratingSentiments[rating]) {
+    if (ratingInput) ratingInput.value = rating;
+
+    if (sentimentBadge && ratingDescriptions[rating]) {
       sentimentBadge.innerHTML = `
-        <span class="badge-icon">${ratingSentiments[rating].icon}</span>
-        <span class="badge-text">${ratingSentiments[rating].text}</span>
+        <span class="badge-icon">${ratingDescriptions[rating].icon}</span>
+        <span class="badge-text">${ratingDescriptions[rating].text}</span>
       `;
     }
   }
 
   starBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const rating = parseInt(btn.dataset.rating, 10);
-      if (ratingInput) ratingInput.value = rating;
-      updateStars(rating);
-      playSound('star', rating);
-    });
-
     btn.addEventListener('mouseenter', () => {
+      playSound('hover');
       const hoverRating = parseInt(btn.dataset.rating, 10);
       starBtns.forEach((b) => {
-        b.classList.toggle('active', parseInt(b.dataset.rating, 10) <= hoverRating);
+        const r = parseInt(b.dataset.rating, 10);
+        b.classList.toggle('hovered', r <= hoverRating);
       });
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      starBtns.forEach((b) => b.classList.remove('hovered'));
+    });
+
+    btn.addEventListener('click', () => {
+      playSound('click');
+      const selectedRating = parseInt(btn.dataset.rating, 10);
+      updateStars(selectedRating);
     });
   });
 
-  document.getElementById('star-rating-box')?.addEventListener('mouseleave', () => {
-    const currentRating = parseInt(ratingInput?.value || 5, 10);
-    updateStars(currentRating);
+  updateStars(5);
+}
+
+function initTagSelector() {
+  const pills = document.querySelectorAll('#form-tag-pills .form-pill');
+  const tagsHidden = document.getElementById('selected-tags-hidden');
+  let selectedTags = [];
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      playSound('click');
+      const tag = pill.dataset.tag;
+      if (selectedTags.includes(tag)) {
+        selectedTags = selectedTags.filter(t => t !== tag);
+        pill.classList.remove('active');
+      } else {
+        selectedTags.push(tag);
+        pill.classList.add('active');
+      }
+      if (tagsHidden) tagsHidden.value = JSON.stringify(selectedTags);
+    });
   });
 }
 
 /* ==========================================================================
-   7. FORM SUBMISSION & REAL-TIME AI SENTIMENT ENGINE
+   8. REAL-TIME AI SENTIMENT PARSER & FORM SUBMISSION
    ========================================================================== */
+function analyzeSentiment(text) {
+  const positiveWords = ['great', 'amazing', 'outstanding', 'love', 'loved', 'awesome', 'excellent', 'helpful', 'engaging', 'clear', 'best', 'super', 'interactive', 'enjoyed', 'gem'];
+  const constructiveWords = ['hard', 'tough', 'difficult', 'fast', 'slow', 'more', 'improve', 'complex', 'pace', 'heavy', 'assignments', 'deploy', 'practical'];
+
+  const lower = text.toLowerCase();
+  let posCount = 0;
+  let conCount = 0;
+
+  positiveWords.forEach(w => { if (lower.includes(w)) posCount++; });
+  constructiveWords.forEach(w => { if (lower.includes(w)) conCount++; });
+
+  if (posCount > conCount) {
+    return { type: 'positive', label: 'Positive & High Energy', confidence: '96%' };
+  } else if (conCount > posCount) {
+    return { type: 'constructive', label: 'Constructive Feedback', confidence: '89%' };
+  } else {
+    return { type: 'neutral', label: 'Balanced Perspective', confidence: '85%' };
+  }
+}
+
 function initFormAndSentiment() {
   const form = document.getElementById('feedback-form');
   const commentsInput = document.getElementById('feedback-comments-input');
   const charCounter = document.getElementById('char-counter');
-  const courseInput = document.getElementById('course-code-input');
-  const quickTags = document.querySelectorAll('.quick-tag');
+  const aiBox = document.getElementById('ai-sentiment-box');
+  const aiTag = document.getElementById('ai-sentiment-tag');
+  const aiText = document.getElementById('ai-sentiment-text');
+  const aiConfidence = document.getElementById('ai-confidence');
   const submitBtn = document.getElementById('submit-btn');
 
-  const sentimentBox = document.getElementById('ai-sentiment-box');
-  const sentimentTag = document.getElementById('ai-sentiment-tag');
-  const sentimentText = document.getElementById('ai-sentiment-text');
-  const confidenceText = document.getElementById('ai-confidence');
-
-  // Real-time sentiment analysis
-  commentsInput?.addEventListener('input', (e) => {
-    const text = e.target.value;
-    if (charCounter) charCounter.textContent = `${text.length} / 500`;
-
-    if (text.trim().length > 8) {
-      const sentiment = analyzeSentiment(text);
-      if (sentimentBox) sentimentBox.style.display = 'flex';
-
-      if (sentimentTag && sentimentText && confidenceText) {
-        sentimentTag.className = `ai-sentiment-tag ${sentiment.type}`;
-        sentimentText.textContent = `AI Analysis: ${sentiment.label}`;
-        confidenceText.textContent = `${sentiment.confidence}% confidence`;
-      }
-    } else {
-      if (sentimentBox) sentimentBox.style.display = 'none';
-    }
-  });
-
-  // Quick Tags
-  quickTags.forEach((tag) => {
-    tag.addEventListener('click', () => {
-      if (courseInput) {
-        courseInput.value = tag.dataset.code;
-        courseInput.focus();
-        playSound('action');
+  // Course Quick Tags
+  document.querySelectorAll('.quick-tag').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      playSound('click');
+      const input = document.getElementById('course-code-input');
+      if (input) {
+        input.value = btn.dataset.code;
+        input.focus();
       }
     });
   });
 
-  // Submit Feedback Handler
+  // Comments live sentiment & char count
+  commentsInput?.addEventListener('input', (e) => {
+    const val = e.target.value;
+    if (charCounter) charCounter.textContent = `${val.length} / 500`;
+
+    if (val.trim().length >= 8) {
+      const sentiment = analyzeSentiment(val);
+      if (aiBox) aiBox.style.display = 'flex';
+      if (aiText) aiText.textContent = `AI Sentiment: ${sentiment.label}`;
+      if (aiConfidence) aiConfidence.textContent = `${sentiment.confidence} confidence`;
+    } else {
+      if (aiBox) aiBox.style.display = 'none';
+    }
+  });
+
+  // Form Submit
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const studentName = document.getElementById('student-name-input').value.trim();
-    const courseCode = courseInput.value.trim().toUpperCase();
-    const rating = parseInt(document.getElementById('rating-value').value, 10);
-    const comments = commentsInput.value.trim();
+    const studentName = document.getElementById('student-name-input')?.value.trim();
+    const courseCode = document.getElementById('course-code-input')?.value.trim().toUpperCase();
+    const category = document.getElementById('feedback-category-select')?.value;
+    const semester = document.getElementById('feedback-semester-input')?.value.trim() || 'Spring 2026';
+    const rating = parseInt(document.getElementById('rating-value')?.value, 10);
+    const comments = commentsInput?.value.trim();
+    const tagsVal = document.getElementById('selected-tags-hidden')?.value || '[]';
 
-    if (!studentName || !courseCode || isNaN(rating)) {
+    let tags = [];
+    try { tags = JSON.parse(tagsVal); } catch { tags = []; }
+
+    if (!studentName || !courseCode) {
+      playSound('error');
       showToast('Please fill out all required fields.', 'error');
       return;
     }
 
-    const btnText = submitBtn.querySelector('.btn-text');
-    const btnLoader = submitBtn.querySelector('.btn-loader');
-    btnText.style.display = 'none';
-    btnLoader.style.display = 'inline-block';
-    submitBtn.disabled = true;
+    const payload = {
+      studentName,
+      courseCode,
+      rating,
+      comments: comments || null,
+      category,
+      tags,
+      semester
+    };
+
+    const btnText = submitBtn?.querySelector('.btn-text');
+    const btnLoader = submitBtn?.querySelector('.btn-loader');
+
+    if (btnText) btnText.style.display = 'none';
+    if (btnLoader) btnLoader.style.display = 'inline-flex';
+    if (submitBtn) submitBtn.disabled = true;
 
     try {
-      const response = await fetch('/api/feedback', {
+      const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentName, courseCode, rating, comments })
+        body: JSON.stringify(payload)
       });
 
-      const result = await response.json();
+      const json = await res.json();
 
-      if (response.ok && result.success) {
-        playSound('submit');
-        showToast('🎉 Feedback Transmitted Successfully!', 'success');
+      if (res.ok && json.success) {
+        playSound('success');
+        showToast('Feedback transmitted successfully to Voxora Matrix!', 'success');
         form.reset();
-        document.getElementById('rating-value').value = 5;
-        document.querySelectorAll('#star-rating-box .star-btn').forEach((b) => b.classList.add('active'));
+        document.querySelectorAll('#form-tag-pills .form-pill').forEach(p => p.classList.remove('active'));
+        if (document.getElementById('selected-tags-hidden')) {
+          document.getElementById('selected-tags-hidden').value = '[]';
+        }
+        if (aiBox) aiBox.style.display = 'none';
         if (charCounter) charCounter.textContent = '0 / 500';
-        if (sentimentBox) sentimentBox.style.display = 'none';
 
+        // Refresh stats and live feed
         fetchDashboardStats();
         fetchFeedbacks();
+
+        // Scroll to feedbacks wall
+        document.getElementById('feedbacks-wall')?.scrollIntoView({ behavior: 'smooth' });
       } else {
-        showToast(result.error || 'Failed to submit feedback', 'error');
+        playSound('error');
+        showToast(json.error || 'Failed to submit feedback', 'error');
       }
     } catch (err) {
-      console.error('Submit error:', err);
-      showToast('Network error: Unable to reach API.', 'error');
+      playSound('error');
+      showToast('Network Error: Unable to reach API.', 'error');
     } finally {
-      btnText.style.display = 'inline-block';
-      btnLoader.style.display = 'none';
-      submitBtn.disabled = false;
+      if (btnText) btnText.style.display = 'inline-flex';
+      if (btnLoader) btnLoader.style.display = 'none';
+      if (submitBtn) submitBtn.disabled = false;
     }
   });
-}
-
-function analyzeSentiment(text) {
-  const lower = text.toLowerCase();
-  const positiveWords = [
-    'great', 'awesome', 'excellent', 'amazing', 'clear', 'engaging', 'loved', 'helpful',
-    'fantastic', 'best', 'good', 'super', 'interactive', 'brilliant', 'valuable', 'enjoyed'
-  ];
-  const criticalWords = [
-    'hard', 'poor', 'bad', 'confusing', 'boring', 'unclear', 'struggled', 'worst',
-    'disappointed', 'difficult', 'slow', 'waste', 'lacked', 'terrible', 'fix'
-  ];
-
-  let posScore = 0;
-  let critScore = 0;
-
-  positiveWords.forEach((w) => {
-    if (lower.includes(w)) posScore += 1;
-  });
-  criticalWords.forEach((w) => {
-    if (lower.includes(w)) critScore += 1;
-  });
-
-  if (posScore > critScore) {
-    const conf = Math.min(85 + posScore * 4, 99);
-    return { type: 'positive', label: 'Positive & Constructive ✨', confidence: conf };
-  } else if (critScore > posScore) {
-    const conf = Math.min(80 + critScore * 5, 98);
-    return { type: 'critical', label: 'Actionable / Needs Attention ⚠️', confidence: conf };
-  } else {
-    return { type: 'neutral', label: 'Balanced & Neutral ⚖️', confidence: 88 };
-  }
 }
 
 /* ==========================================================================
-   8. DASHBOARD STATS & ANALYTICS FETCH
+   9. FEEDBACKS WALL, FILTERS, VIEW MODES & UPVOTES
    ========================================================================== */
-async function fetchDashboardStats() {
-  try {
-    const res = await fetch('/api/feedback/stats/summary');
-    const data = await res.json();
+let currentFeedbacks = [];
+let currentViewMode = 'grid'; // 'grid' or 'table'
 
-    if (!res.ok || !data.success) return;
+function initViewModes() {
+  const gridBtn = document.getElementById('view-grid-btn');
+  const listBtn = document.getElementById('view-list-btn');
 
-    // Total Count
-    const totalEl = document.getElementById('stat-total-count');
-    if (totalEl) totalEl.textContent = data.totalFeedback;
-
-    // Average Rating
-    const avgEl = document.getElementById('stat-avg-rating');
-    if (avgEl) avgEl.textContent = data.overallAverageRating > 0 ? data.overallAverageRating.toFixed(1) : 'N/A';
-
-    // Stars Preview
-    const starsEl = document.getElementById('stat-stars-render');
-    if (starsEl) {
-      const rounded = Math.round(data.overallAverageRating || 0);
-      starsEl.textContent = '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
-    }
-
-    // AI Sentiment Index Calculation
-    const total = data.totalFeedback || 1;
-    const highRatings = (data.ratingDistribution[5] || 0) + (data.ratingDistribution[4] || 0);
-    const sentimentPct = Math.round((highRatings / total) * 100);
-    const sentScoreEl = document.getElementById('stat-sentiment-score');
-    if (sentScoreEl) sentScoreEl.textContent = `${sentimentPct}%`;
-
-    // Highest Rated Course
-    const topCourseEl = document.getElementById('stat-top-course');
-    const topCourseDescEl = document.getElementById('stat-top-course-desc');
-    if (data.courseBreakdown.length > 0) {
-      const sortedByRating = [...data.courseBreakdown].sort((a, b) => b.averageRating - a.averageRating);
-      const top = sortedByRating[0];
-      if (topCourseEl) topCourseEl.textContent = top.courseCode;
-      if (topCourseDescEl) topCourseDescEl.textContent = `${top.averageRating}★ average rating (${top.feedbackCount} reviews)`;
-    } else {
-      if (topCourseEl) topCourseEl.textContent = 'N/A';
-      if (topCourseDescEl) topCourseDescEl.textContent = 'No reviews yet';
-    }
-
-    // Rating Distribution Bars
-    for (let r = 1; r <= 5; r++) {
-      const count = data.ratingDistribution[r] || 0;
-      const pct = Math.round((count / total) * 100);
-      const bar = document.getElementById(`bar-${r}`);
-      const countEl = document.getElementById(`count-${r}`);
-      if (bar) bar.style.width = `${pct}%`;
-      if (countEl) countEl.textContent = `${count} (${pct}%)`;
-    }
-
-    renderCourseLeaderboard(data.courseBreakdown);
-    updateCourseFilterOptions(data.courseBreakdown);
-  } catch (err) {
-    console.error('Error fetching dashboard stats:', err);
-  }
-}
-
-function renderCourseLeaderboard(courses) {
-  const container = document.getElementById('course-leaderboard-container');
-  if (!container) return;
-
-  if (!courses || courses.length === 0) {
-    container.innerHTML = `<div class="empty-state">No courses reviewed yet.</div>`;
-    return;
-  }
-
-  container.innerHTML = courses
-    .map(
-      (c) => `
-      <div class="course-item">
-        <div class="course-item-code">
-          <i class="fa-solid fa-code-branch text-purple"></i>
-          <span>${escapeHtml(c.courseCode)}</span>
-        </div>
-        <div class="course-item-stats">
-          <div class="course-item-rating">
-            <i class="fa-solid fa-star"></i>
-            <span>${c.averageRating}</span>
-          </div>
-          <span class="course-item-count">${c.feedbackCount} review${c.feedbackCount > 1 ? 's' : ''}</span>
-        </div>
-      </div>
-    `
-    )
-    .join('');
-}
-
-function updateCourseFilterOptions(courses) {
-  const filterSelect = document.getElementById('feed-course-filter');
-  if (!filterSelect) return;
-
-  const currentVal = filterSelect.value;
-  const uniqueCourses = [...new Set(courses.map((c) => c.courseCode))].sort();
-
-  let optionsHtml = `<option value="ALL">All Courses</option>`;
-  uniqueCourses.forEach((code) => {
-    optionsHtml += `<option value="${escapeHtml(code)}" ${currentVal === code ? 'selected' : ''}>${escapeHtml(code)}</option>`;
+  gridBtn?.addEventListener('click', () => {
+    playSound('click');
+    currentViewMode = 'grid';
+    gridBtn.classList.add('active');
+    listBtn?.classList.remove('active');
+    renderFeedbacksList(currentFeedbacks);
   });
 
-  filterSelect.innerHTML = optionsHtml;
+  listBtn?.addEventListener('click', () => {
+    playSound('click');
+    currentViewMode = 'table';
+    listBtn.classList.add('active');
+    gridBtn?.classList.remove('active');
+    renderFeedbacksList(currentFeedbacks);
+  });
 }
-
-/* ==========================================================================
-   9. FEEDBACKS WALL & CARDS
-   ========================================================================== */
-let allFeedbacksCache = [];
 
 async function fetchFeedbacks() {
   const grid = document.getElementById('feedbacks-grid');
-  const search = document.getElementById('feed-search-input')?.value || '';
-  const courseCode = document.getElementById('feed-course-filter')?.value || 'ALL';
-  const sort = document.getElementById('feed-sort-select')?.value || 'newest';
+  const search = document.getElementById('feed-search-input')?.value.trim();
+  const courseCode = document.getElementById('feed-course-filter')?.value;
+  const category = document.getElementById('feed-category-filter')?.value;
+  const sort = document.getElementById('feed-sort-select')?.value;
 
   const params = new URLSearchParams();
+  if (search) params.append('search', search);
   if (courseCode && courseCode !== 'ALL') params.append('courseCode', courseCode);
-  if (search.trim()) params.append('search', search.trim());
+  if (category && category !== 'ALL') params.append('category', category);
   if (sort) params.append('sort', sort);
 
   try {
     const res = await fetch(`/api/feedback?${params.toString()}`);
-    const data = await res.json();
+    const json = await res.json();
 
-    if (!res.ok || !data.success) {
-      if (grid) grid.innerHTML = `<div class="empty-state"><i class="fa-solid fa-circle-exclamation"></i><p>Unable to load feedbacks.</p></div>`;
-      return;
+    if (json.success && Array.isArray(json.data)) {
+      currentFeedbacks = json.data;
+      renderFeedbacksList(currentFeedbacks);
+      populateCourseFilters(currentFeedbacks);
+    } else {
+      if (grid) grid.innerHTML = `<div class="loading-state">No feedback records found.</div>`;
     }
-
-    allFeedbacksCache = data.data || [];
-    renderFeedbacksGrid(allFeedbacksCache);
   } catch (err) {
-    console.error('Error fetching feedbacks:', err);
-    if (grid) grid.innerHTML = `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Network Error loading feedbacks.</p></div>`;
+    if (grid) grid.innerHTML = `<div class="loading-state text-danger">Error loading feedbacks from database.</div>`;
   }
 }
 
-function renderFeedbacksGrid(feedbacks) {
-  const grid = document.getElementById('feedbacks-grid');
-  if (!grid) return;
+function renderFeedbacksList(feedbacks) {
+  const container = document.getElementById('feedbacks-grid');
+  if (!container) return;
 
   if (!feedbacks || feedbacks.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <i class="fa-solid fa-ghost"></i>
-        <h3>No student feedbacks found</h3>
-        <p>Try clearing your search query or be the first to submit a review!</p>
+    container.innerHTML = `<div class="loading-state">No student reviews match the current filters.</div>`;
+    return;
+  }
+
+  if (currentViewMode === 'table') {
+    let rowsHtml = '';
+    feedbacks.forEach(f => {
+      const stars = '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating);
+      rowsHtml += `
+        <tr>
+          <td><strong>${escapeHtml(f.studentName || 'Student')}</strong></td>
+          <td><span class="course-code-badge">${escapeHtml(f.courseCode)}</span></td>
+          <td style="color:#fbbf24;">${stars}</td>
+          <td><span class="card-category-badge">${escapeHtml(f.category || 'General')}</span></td>
+          <td>${escapeHtml(f.comments || 'No comments left.')}</td>
+          <td>
+            <button class="like-btn" onclick="likeFeedbackCard(${f.id}, this)">
+              <i class="fa-regular fa-thumbs-up"></i> ${f.likesCount || 0}
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+    container.innerHTML = `
+      <div class="feedbacks-table-wrap">
+        <table class="feedbacks-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Course</th>
+              <th>Rating</th>
+              <th>Category</th>
+              <th>Feedback</th>
+              <th>Reactions</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
       </div>
     `;
     return;
   }
 
-  grid.innerHTML = feedbacks
-    .map((item) => {
-      const initials = getInitials(item.studentName);
-      const starsHtml = '★'.repeat(item.rating) + '☆'.repeat(5 - item.rating);
-      const timeFormatted = formatDate(item.createdAt);
-      const sentiment = analyzeSentiment(item.comments || '');
+  // Grid Mode (3D Tilt Cards)
+  container.innerHTML = feedbacks.map(f => {
+    const initials = (f.studentName || 'S').slice(0, 2).toUpperCase();
+    const stars = '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating);
+    const dateFormatted = f.createdAt ? new Date(f.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
 
-      return `
-      <div class="feedback-card glass-panel tilt-card" data-id="${item.id}">
+    const tagsHtml = (Array.isArray(f.tags) ? f.tags : []).map(t => `<span class="card-tag">${escapeHtml(t)}</span>`).join('');
+
+    const instructorReplyHtml = f.instructorReply ? `
+      <div class="instructor-reply-box">
+        <div class="instructor-reply-header">
+          <i class="fa-solid fa-circle-check"></i> Faculty Response:
+        </div>
+        <div class="instructor-reply-text">"${escapeHtml(f.instructorReply)}"</div>
+      </div>
+    ` : '';
+
+    return `
+      <div class="feedback-card glass-panel tilt-card" data-tilt data-id="${f.id}">
         <div>
-          <div class="feedback-card-top">
-            <div class="student-profile">
-              <div class="avatar-circle">${initials}</div>
-              <div class="student-meta">
-                <span class="student-name">${escapeHtml(item.studentName)}</span>
-                <span class="timestamp">${timeFormatted}</span>
+          <div class="feedback-card-header">
+            <div class="student-meta">
+              <div class="student-avatar">${initials}</div>
+              <div>
+                <div class="student-name-text">${escapeHtml(f.studentName || 'Anonymous Student')}</div>
+                <div class="feedback-time-text">${dateFormatted} &bull; ${escapeHtml(f.semester || 'Spring 2026')}</div>
               </div>
             </div>
-            <span class="course-pill">${escapeHtml(item.courseCode)}</span>
+            <span class="course-tag-pill">${escapeHtml(f.courseCode)}</span>
           </div>
 
-          <div class="feedback-rating-row">
-            <span class="stars-glow">${starsHtml}</span>
-            <span class="rating-score-pill">${item.rating}.0 / 5.0</span>
-            <span class="sentiment-pill-mini ${sentiment.type}">
-              <i class="fa-solid fa-brain"></i> ${sentiment.type.toUpperCase()}
-            </span>
+          <div class="card-rating-row">
+            <div class="card-stars">${stars}</div>
+            <span class="card-category-badge">${escapeHtml(f.category || 'General')}</span>
           </div>
 
-          <p class="feedback-body">${item.comments ? escapeHtml(item.comments) : '<em style="color: var(--text-muted);">No additional comments provided.</em>'}</p>
+          <div class="card-comment">
+            "${escapeHtml(f.comments || 'Outstanding course experience and high quality content.')}"
+          </div>
+
+          ${tagsHtml ? `<div class="card-tags-row">${tagsHtml}</div>` : ''}
+          ${instructorReplyHtml}
         </div>
 
-        <div class="feedback-footer">
-          <span class="feedback-id-tag" title="Click to copy ID" onclick="copyToClipboard('${item.id}', 'Feedback ID Copied!')">
-            <i class="fa-solid fa-hashtag"></i> ID: ${item.id}
-          </span>
-          <div class="card-action-btns">
-            ${
-              isAdminMode
-                ? `
-              <button class="card-btn btn-card-edit" title="Edit (Admin)" onclick="openEditModal(${item.id})">
+        <div class="card-footer">
+          <button class="like-btn" onclick="likeFeedbackCard(${f.id}, this)" title="Mark as Helpful">
+            <i class="fa-regular fa-thumbs-up"></i> Helpful (<span class="like-count">${f.likesCount || 0}</span>)
+          </button>
+
+          <div class="admin-card-actions">
+            ${isAdminMode ? `
+              <button class="action-icon-btn" onclick="openReplyModal(${f.id}, '${escapeHtml(f.studentName)}')" title="Reply as Faculty">
+                <i class="fa-solid fa-reply"></i>
+              </button>
+              <button class="action-icon-btn" onclick="openEditModal(${f.id})" title="Edit Feedback">
                 <i class="fa-solid fa-pen"></i>
               </button>
-              <button class="card-btn btn-card-delete" title="Delete (Admin)" onclick="openDeleteModal(${item.id})">
+              <button class="action-icon-btn delete-btn" onclick="openDeleteModal(${f.id})" title="Delete Feedback">
                 <i class="fa-solid fa-trash"></i>
               </button>
-            `
-                : `
-              <button class="card-btn" title="Click to copy review text" onclick="copyToClipboard('${escapeHtml(item.comments || item.courseCode)}', 'Review copied!')">
-                <i class="fa-regular fa-copy"></i>
-              </button>
-            `
-            }
+            ` : ''}
           </div>
         </div>
         <div class="card-shine"></div>
       </div>
     `;
-    })
-    .join('');
+  }).join('');
 
   init3DTilt();
 }
 
-/* ==========================================================================
-   10. EXPORT TO CSV & PRINT REPORT
-   ========================================================================== */
-function initExportFeatures() {
-  const exportCsvBtn = document.getElementById('export-csv-btn');
-  const quickExportCsvBtn = document.getElementById('quick-export-csv-btn');
-  const exportPdfBtn = document.getElementById('export-summary-pdf-btn');
+function populateCourseFilters(feedbacks) {
+  const courseFilter = document.getElementById('feed-course-filter');
+  if (!courseFilter) return;
 
-  function exportCSV() {
-    playSound('action');
-    if (!allFeedbacksCache || allFeedbacksCache.length === 0) {
-      showToast('No feedbacks available to export.', 'error');
-      return;
-    }
+  const currentVal = courseFilter.value;
+  const uniqueCourses = [...new Set(feedbacks.map(f => f.courseCode))].filter(Boolean).sort();
 
-    const headers = ['ID', 'Student Name', 'Course Code', 'Rating', 'Comments', 'Created At'];
-    const rows = allFeedbacksCache.map((item) => [
-      item.id,
-      `"${(item.studentName || '').replace(/"/g, '""')}"`,
-      `"${(item.courseCode || '').replace(/"/g, '""')}"`,
-      item.rating,
-      `"${(item.comments || '').replace(/"/g, '""')}"`,
-      `"${item.createdAt || ''}"`
-    ]);
-
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Voxora_Student_Feedbacks_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    showToast('📊 CSV Report Downloaded!', 'success');
-  }
-
-  exportCsvBtn?.addEventListener('click', exportCSV);
-  quickExportCsvBtn?.addEventListener('click', exportCSV);
-
-  exportPdfBtn?.addEventListener('click', () => {
-    playSound('action');
-    window.print();
+  let optionsHtml = '<option value="ALL">All Courses</option>';
+  uniqueCourses.forEach(c => {
+    optionsHtml += `<option value="${c}" ${c === currentVal ? 'selected' : ''}>${c}</option>`;
   });
+  courseFilter.innerHTML = optionsHtml;
 }
 
-/* ==========================================================================
-   11. FILTERS, SEARCH & MODALS
-   ========================================================================== */
 function initFiltersAndSearch() {
   const searchInput = document.getElementById('feed-search-input');
   const clearBtn = document.getElementById('clear-search-btn');
   const courseFilter = document.getElementById('feed-course-filter');
+  const categoryFilter = document.getElementById('feed-category-filter');
   const sortSelect = document.getElementById('feed-sort-select');
 
   let debounceTimer;
+
   searchInput?.addEventListener('input', (e) => {
-    clearBtn.style.display = e.target.value.length > 0 ? 'block' : 'none';
     clearTimeout(debounceTimer);
+    if (clearBtn) clearBtn.style.display = e.target.value ? 'block' : 'none';
     debounceTimer = setTimeout(() => {
       fetchFeedbacks();
     }, 250);
   });
 
   clearBtn?.addEventListener('click', () => {
-    searchInput.value = '';
+    if (searchInput) searchInput.value = '';
     clearBtn.style.display = 'none';
     fetchFeedbacks();
   });
 
-  courseFilter?.addEventListener('change', () => fetchFeedbacks());
-  sortSelect?.addEventListener('change', () => fetchFeedbacks());
+  courseFilter?.addEventListener('change', () => {
+    playSound('action');
+    fetchFeedbacks();
+  });
+
+  categoryFilter?.addEventListener('change', () => {
+    playSound('action');
+    fetchFeedbacks();
+  });
+
+  sortSelect?.addEventListener('change', () => {
+    playSound('action');
+    fetchFeedbacks();
+  });
 }
 
+// Global Helpful / Upvote Handler
+window.likeFeedbackCard = async function (id, btnElem) {
+  playSound('like');
+  try {
+    const res = await fetch(`/api/feedback/${id}/like`, { method: 'POST' });
+    const json = await res.json();
+    if (json.success) {
+      btnElem.classList.add('liked');
+      const countSpan = btnElem.querySelector('.like-count');
+      if (countSpan) countSpan.textContent = json.likesCount;
+      showToast('Marked as helpful 👍', 'success');
+      // Update quick ribbon
+      const ribbon = document.getElementById('ribbon-reactions');
+      if (ribbon) ribbon.textContent = parseInt(ribbon.textContent || '0', 10) + 1;
+    }
+  } catch (err) {
+    showToast('Failed to record reaction', 'error');
+  }
+};
+
+/* ==========================================================================
+   10. ANALYTICS & DASHBOARD STATS MATRIX
+   ========================================================================== */
+async function fetchDashboardStats() {
+  try {
+    const res = await fetch('/api/feedback/stats/summary');
+    const json = await res.json();
+
+    if (json.success) {
+      renderStatsMatrix(json);
+    }
+  } catch (err) {
+    console.error('Error fetching analytics:', err);
+  }
+}
+
+function renderStatsMatrix(stats) {
+  const totalCountElem = document.getElementById('stat-total-count');
+  const avgRatingElem = document.getElementById('stat-avg-rating');
+  const starsRender = document.getElementById('stat-stars-render');
+  const sentimentScoreElem = document.getElementById('stat-sentiment-score');
+  const topCourseElem = document.getElementById('stat-top-course');
+  const topCourseDesc = document.getElementById('stat-top-course-desc');
+  const ribbonReactions = document.getElementById('ribbon-reactions');
+
+  // Total
+  if (totalCountElem) totalCountElem.textContent = stats.totalFeedback;
+  if (ribbonReactions) ribbonReactions.textContent = stats.totalReactions || 0;
+
+  // Average Rating
+  const avg = stats.overallAverageRating || 0;
+  if (avgRatingElem) avgRatingElem.textContent = avg.toFixed(1);
+
+  if (starsRender) {
+    const full = Math.round(avg);
+    starsRender.textContent = '★'.repeat(full) + '☆'.repeat(Math.max(0, 5 - full));
+  }
+
+  // Donut Gauge
+  const donutScore = document.getElementById('donut-rating-val');
+  const donutSegment = document.getElementById('donut-score-segment');
+  if (donutScore) donutScore.textContent = avg.toFixed(1);
+  if (donutSegment) {
+    const circumference = 301.59;
+    const progress = (avg / 5.0) * circumference;
+    donutSegment.style.strokeDashoffset = circumference - progress;
+  }
+
+  // Sentiment Score
+  if (sentimentScoreElem) {
+    sentimentScoreElem.textContent = `${stats.sentimentScore || 94}%`;
+  }
+
+  // Distribution Bars
+  const dist = stats.ratingDistribution || {};
+  const total = stats.totalFeedback || 1;
+
+  for (let i = 1; i <= 5; i++) {
+    const count = dist[i] || 0;
+    const pct = ((count / total) * 100).toFixed(0);
+    const bar = document.getElementById(`bar-${i}`);
+    const countElem = document.getElementById(`count-${i}`);
+    if (bar) bar.style.width = `${pct}%`;
+    if (countElem) countElem.textContent = count;
+  }
+
+  // Course Leaderboard
+  const courses = stats.courseBreakdown || [];
+  const leaderboardContainer = document.getElementById('course-leaderboard-container');
+
+  if (courses.length > 0) {
+    if (topCourseElem) topCourseElem.textContent = courses[0].courseCode;
+    if (topCourseDesc) topCourseDesc.textContent = `${courses[0].averageRating} ★ (${courses[0].feedbackCount} reviews)`;
+
+    if (leaderboardContainer) {
+      leaderboardContainer.innerHTML = courses.map(c => `
+        <div class="course-item" onclick="filterByCourseLeaderboard('${c.courseCode}')">
+          <span class="course-code-badge">${c.courseCode}</span>
+          <div class="course-stats-right">
+            <span class="course-rating-val">${c.averageRating} ★</span>
+            <span class="course-count-val">${c.feedbackCount} reviews</span>
+          </div>
+        </div>
+      `).join('');
+    }
+  } else {
+    if (leaderboardContainer) leaderboardContainer.innerHTML = '<div class="loading-state">No courses recorded yet.</div>';
+  }
+}
+
+window.filterByCourseLeaderboard = function (courseCode) {
+  playSound('action');
+  const filter = document.getElementById('feed-course-filter');
+  if (filter) {
+    filter.value = courseCode;
+    fetchFeedbacks();
+    document.getElementById('feedbacks-wall')?.scrollIntoView({ behavior: 'smooth' });
+    showToast(`Filtered feed by course: ${courseCode}`, 'info');
+  }
+};
+
+/* ==========================================================================
+   11. MODALS (EDIT, FACULTY REPLY, DELETE)
+   ========================================================================== */
 function initModals() {
+  // Edit Modal
   const editModal = document.getElementById('edit-modal');
-  const deleteModal = document.getElementById('delete-modal');
-  const closeEditBtn = document.getElementById('close-edit-modal');
-  const cancelEditBtn = document.getElementById('cancel-edit-btn');
-  const closeDeleteBtn = document.getElementById('close-delete-modal');
-  const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+  const closeEdit = document.getElementById('close-edit-modal');
+  const cancelEdit = document.getElementById('cancel-edit-btn');
   const editForm = document.getElementById('edit-feedback-form');
-  const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 
-  const modalStars = document.querySelectorAll('#edit-stars-box .modal-star-btn');
-  const editRatingInput = document.getElementById('edit-rating-value');
+  const closeEditModal = () => { if (editModal) editModal.style.display = 'none'; };
+  closeEdit?.addEventListener('click', closeEditModal);
+  cancelEdit?.addEventListener('click', closeEditModal);
 
-  modalStars.forEach((btn) => {
+  // Edit Star buttons
+  const editStarBtns = document.querySelectorAll('#edit-stars-box .modal-star-btn');
+  editStarBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const r = parseInt(btn.dataset.rating, 10);
-      if (editRatingInput) editRatingInput.value = r;
-      modalStars.forEach((b) => {
-        b.classList.toggle('active', parseInt(b.dataset.rating, 10) <= r);
+      document.getElementById('edit-rating-value').value = r;
+      editStarBtns.forEach(b => {
+        b.style.color = parseInt(b.dataset.rating, 10) <= r ? '#fbbf24' : '#64748b';
       });
-      playSound('star', r);
     });
   });
 
-  closeEditBtn?.addEventListener('click', () => (editModal.style.display = 'none'));
-  cancelEditBtn?.addEventListener('click', () => (editModal.style.display = 'none'));
-
-  closeDeleteBtn?.addEventListener('click', () => (deleteModal.style.display = 'none'));
-  cancelDeleteBtn?.addEventListener('click', () => (deleteModal.style.display = 'none'));
-
   editForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const id = document.getElementById('edit-feedback-id').value;
-    const studentName = document.getElementById('edit-student-name').value.trim();
-    const courseCode = document.getElementById('edit-course-code').value.trim().toUpperCase();
-    const rating = parseInt(document.getElementById('edit-rating-value').value, 10);
-    const comments = document.getElementById('edit-comments').value.trim();
+    const id = document.getElementById('edit-feedback-id')?.value;
+    const studentName = document.getElementById('edit-student-name')?.value.trim();
+    const courseCode = document.getElementById('edit-course-code')?.value.trim().toUpperCase();
+    const category = document.getElementById('edit-category')?.value;
+    const rating = parseInt(document.getElementById('edit-rating-value')?.value, 10);
+    const comments = document.getElementById('edit-comments')?.value.trim();
 
     try {
       const res = await fetch(`/api/feedback/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentName, courseCode, rating, comments })
+        body: JSON.stringify({ studentName, courseCode, category, rating, comments })
       });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        playSound('submit');
+      const json = await res.json();
+      if (json.success) {
+        playSound('success');
         showToast('Feedback updated successfully!', 'success');
-        editModal.style.display = 'none';
-        fetchDashboardStats();
+        closeEditModal();
         fetchFeedbacks();
+        fetchDashboardStats();
       } else {
-        showToast(data.error || 'Failed to update feedback', 'error');
+        showToast(json.error || 'Failed to update', 'error');
       }
-    } catch (err) {
-      showToast('Network error during update.', 'error');
+    } catch {
+      showToast('Network error updating feedback', 'error');
     }
   });
 
-  confirmDeleteBtn?.addEventListener('click', async () => {
-    const id = document.getElementById('delete-feedback-id').value;
-    if (!id) return;
+  // Reply Modal
+  const replyModal = document.getElementById('reply-modal');
+  const closeReply = document.getElementById('close-reply-modal');
+  const cancelReply = document.getElementById('cancel-reply-btn');
+  const replyForm = document.getElementById('reply-feedback-form');
+
+  const closeReplyModal = () => { if (replyModal) replyModal.style.display = 'none'; };
+  closeReply?.addEventListener('click', closeReplyModal);
+  cancelReply?.addEventListener('click', closeReplyModal);
+
+  replyForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('reply-feedback-id')?.value;
+    const replyText = document.getElementById('reply-text-input')?.value.trim();
 
     try {
-      const res = await fetch(`/api/feedback/${id}`, { method: 'DELETE' });
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        playSound('action');
-        showToast('Feedback deleted successfully.', 'info');
-        deleteModal.style.display = 'none';
-        fetchDashboardStats();
+      const res = await fetch(`/api/feedback/${id}/reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reply: replyText })
+      });
+      const json = await res.json();
+      if (json.success) {
+        playSound('success');
+        showToast('Faculty response published!', 'success');
+        closeReplyModal();
         fetchFeedbacks();
       } else {
-        showToast(data.error || 'Failed to delete feedback', 'error');
+        showToast(json.error || 'Failed to post reply', 'error');
       }
-    } catch (err) {
-      showToast('Network error during deletion.', 'error');
+    } catch {
+      showToast('Network error publishing reply', 'error');
+    }
+  });
+
+  // Delete Modal
+  const deleteModal = document.getElementById('delete-modal');
+  const closeDelete = document.getElementById('close-delete-modal');
+  const cancelDelete = document.getElementById('cancel-delete-btn');
+  const confirmDelete = document.getElementById('confirm-delete-btn');
+
+  const closeDeleteModal = () => { if (deleteModal) deleteModal.style.display = 'none'; };
+  closeDelete?.addEventListener('click', closeDeleteModal);
+  cancelDelete?.addEventListener('click', closeDeleteModal);
+
+  confirmDelete?.addEventListener('click', async () => {
+    const id = document.getElementById('delete-feedback-id')?.value;
+    try {
+      const res = await fetch(`/api/feedback/${id}`, { method: 'DELETE' });
+      const json = await res.json();
+      if (json.success) {
+        playSound('action');
+        showToast('Feedback record removed.', 'info');
+        closeDeleteModal();
+        fetchFeedbacks();
+        fetchDashboardStats();
+      }
+    } catch {
+      showToast('Error deleting feedback', 'error');
     }
   });
 }
 
 window.openEditModal = function (id) {
-  const item = allFeedbacksCache.find((f) => f.id === id);
+  const item = currentFeedbacks.find(f => f.id === id);
   if (!item) return;
 
+  playSound('click');
   document.getElementById('edit-feedback-id').value = item.id;
-  document.getElementById('edit-student-name').value = item.studentName;
-  document.getElementById('edit-course-code').value = item.courseCode;
+  document.getElementById('edit-student-name').value = item.studentName || '';
+  document.getElementById('edit-course-code').value = item.courseCode || '';
+  document.getElementById('edit-category').value = item.category || 'General';
+  document.getElementById('edit-rating-value').value = item.rating || 5;
   document.getElementById('edit-comments').value = item.comments || '';
-  document.getElementById('edit-rating-value').value = item.rating;
 
-  const modalStars = document.querySelectorAll('#edit-stars-box .modal-star-btn');
-  modalStars.forEach((b) => {
-    b.classList.toggle('active', parseInt(b.dataset.rating, 10) <= item.rating);
+  const btns = document.querySelectorAll('#edit-stars-box .modal-star-btn');
+  btns.forEach(b => {
+    b.style.color = parseInt(b.dataset.rating, 10) <= item.rating ? '#fbbf24' : '#64748b';
   });
 
-  document.getElementById('edit-modal').style.display = 'flex';
-  playSound('action');
+  const modal = document.getElementById('edit-modal');
+  if (modal) modal.style.display = 'flex';
+};
+
+window.openReplyModal = function (id, studentName) {
+  playSound('click');
+  document.getElementById('reply-feedback-id').value = id;
+  const targetLabel = document.getElementById('reply-modal-target-student');
+  if (targetLabel) targetLabel.textContent = `Responding to feedback from: ${studentName}`;
+  const modal = document.getElementById('reply-modal');
+  if (modal) modal.style.display = 'flex';
 };
 
 window.openDeleteModal = function (id) {
+  playSound('click');
   document.getElementById('delete-feedback-id').value = id;
-  document.getElementById('delete-modal').style.display = 'flex';
-  playSound('action');
+  const modal = document.getElementById('delete-modal');
+  if (modal) modal.style.display = 'flex';
 };
 
 /* ==========================================================================
-   12. REST API EXPLORER
+   12. MULTI-FORMAT EXPORT SUITE (CSV, JSON, PRINT)
+   ========================================================================== */
+function initExportFeatures() {
+  const exportActionsBtn = document.getElementById('export-actions-btn');
+  const exportMenu = document.getElementById('export-menu');
+
+  exportActionsBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    playSound('click');
+    exportMenu?.classList.toggle('show');
+  });
+
+  document.addEventListener('click', () => {
+    exportMenu?.classList.remove('show');
+  });
+
+  // Direct CSV Downloads
+  const downloadCsv = () => {
+    playSound('action');
+    window.location.href = '/api/feedback/export/csv';
+    showToast('Downloading CSV Report...', 'info');
+  };
+
+  document.getElementById('quick-export-csv-btn')?.addEventListener('click', downloadCsv);
+  document.getElementById('export-csv-opt')?.addEventListener('click', downloadCsv);
+
+  // Direct JSON Downloads
+  const downloadJson = () => {
+    playSound('action');
+    window.location.href = '/api/feedback/export/json';
+    showToast('Downloading JSON Dataset...', 'info');
+  };
+
+  document.getElementById('quick-export-json-btn')?.addEventListener('click', downloadJson);
+  document.getElementById('export-json-opt')?.addEventListener('click', downloadJson);
+
+  // Print Summary
+  const printReport = () => {
+    playSound('action');
+    window.print();
+  };
+
+  document.getElementById('export-summary-pdf-btn')?.addEventListener('click', printReport);
+  document.getElementById('export-print-opt')?.addEventListener('click', printReport);
+}
+
+/* ==========================================================================
+   13. INTERACTIVE REST API EXPLORER
    ========================================================================== */
 function initApiExplorer() {
   const tabs = document.querySelectorAll('.api-tab');
   const methodBadge = document.getElementById('api-method-badge');
   const urlDisplay = document.getElementById('api-url-display');
+  const paramsBox = document.getElementById('api-params-box');
+  const reqBody = document.getElementById('api-request-body');
   const executeBtn = document.getElementById('execute-api-btn');
   const copyCurlBtn = document.getElementById('copy-curl-btn');
-  const statusCode = document.getElementById('api-status-code');
   const responseViewer = document.getElementById('api-response-viewer');
+  const statusCodeElem = document.getElementById('api-status-code');
+  const latencyElem = document.getElementById('api-latency');
 
-  const endpointConfigs = {
-    getAll: {
-      method: 'GET',
-      url: '/api/feedback',
-      badgeClass: '',
-      curl: `curl -X GET "${window.location.origin}/api/feedback"`
+  const endpointConfig = {
+    getAll: { method: 'GET', url: '/api/feedback', body: null },
+    getStats: { method: 'GET', url: '/api/feedback/stats/summary', body: null },
+    create: { 
+      method: 'POST', 
+      url: '/api/feedback', 
+      body: JSON.stringify({
+        studentName: "Mira Sorvino",
+        courseCode: "AI402",
+        rating: 5,
+        category: "Lab Experience",
+        tags: ["#HandsOnLab", "#NeuralNets"],
+        comments: "Transformers workshop was stellar."
+      }, null, 2)
     },
-    getStats: {
-      method: 'GET',
-      url: '/api/feedback/stats/summary',
-      badgeClass: '',
-      curl: `curl -X GET "${window.location.origin}/api/feedback/stats/summary"`
+    getSingle: { method: 'GET', url: '/api/feedback/1', body: null },
+    like: { method: 'POST', url: '/api/feedback/1/like', body: null },
+    reply: { 
+      method: 'POST', 
+      url: '/api/feedback/1/reply', 
+      body: JSON.stringify({ reply: "Thank you for the wonderful feedback!" }, null, 2)
     },
-    create: {
-      method: 'POST',
-      url: '/api/feedback',
-      badgeClass: 'post',
-      curl: `curl -X POST "${window.location.origin}/api/feedback" -H "Content-Type: application/json" -d '{"studentName":"Test Student","courseCode":"CS101","rating":5,"comments":"Great course!"}'`
-    },
-    getSingle: {
-      method: 'GET',
-      url: '/api/feedback/1',
-      badgeClass: '',
-      curl: `curl -X GET "${window.location.origin}/api/feedback/1"`
-    }
+    exportCsv: { method: 'GET', url: '/api/feedback/export/csv', body: null },
+    health: { method: 'GET', url: '/api/health', body: null }
   };
 
-  let currentTab = 'getAll';
+  let activeEndpoint = 'getAll';
 
-  tabs.forEach((tab) => {
+  tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach((t) => t.classList.remove('active'));
+      playSound('click');
+      tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-      currentTab = tab.dataset.endpoint;
 
-      const conf = endpointConfigs[currentTab];
-      if (conf) {
+      activeEndpoint = tab.dataset.endpoint;
+      const conf = endpointConfig[activeEndpoint];
+
+      if (methodBadge) {
         methodBadge.textContent = conf.method;
-        methodBadge.className = `http-method-badge ${conf.badgeClass}`;
-        urlDisplay.textContent = conf.url;
+        methodBadge.className = `http-method-badge ${conf.method}`;
       }
-      playSound('action');
+      if (urlDisplay) urlDisplay.textContent = conf.url;
+
+      if (conf.body) {
+        if (paramsBox) paramsBox.style.display = 'block';
+        if (reqBody) reqBody.value = conf.body;
+      } else {
+        if (paramsBox) paramsBox.style.display = 'none';
+      }
     });
   });
 
   executeBtn?.addEventListener('click', async () => {
-    const conf = endpointConfigs[currentTab];
-    if (!conf) return;
-
     playSound('action');
-    responseViewer.textContent = '// Sending request to ' + conf.url + ' ...';
+    const conf = endpointConfig[activeEndpoint];
     const startTime = performance.now();
 
+    if (responseViewer) responseViewer.textContent = '// Sending request to Voxora Quantum API...';
+
     try {
-      let res;
-      if (conf.method === 'GET') {
-        res = await fetch(conf.url);
-      } else if (conf.method === 'POST') {
-        res = await fetch(conf.url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            studentName: 'API Explorer Student',
-            courseCode: 'DEV999',
-            rating: 5,
-            comments: 'Tested via Voxora Interactive API Explorer!'
-          })
-        });
+      const options = { method: conf.method, headers: {} };
+      if (conf.method === 'POST' || conf.method === 'PUT') {
+        options.headers['Content-Type'] = 'application/json';
+        options.body = reqBody?.value;
       }
 
+      const res = await fetch(conf.url, options);
       const latency = Math.round(performance.now() - startTime);
-      const data = await res.json();
 
-      statusCode.textContent = `${res.status} ${res.statusText || 'OK'}`;
-      statusCode.style.color = res.ok ? '#10b981' : '#f43f5e';
-      document.getElementById('api-latency').textContent = `⚡ ${latency}ms`;
+      if (statusCodeElem) statusCodeElem.textContent = `${res.status} ${res.statusText || 'OK'}`;
+      if (latencyElem) latencyElem.innerHTML = `<i class="fa-solid fa-bolt"></i> ${latency}ms latency`;
 
-      responseViewer.textContent = JSON.stringify(data, null, 2);
-
-      if (conf.method === 'POST') {
-        fetchDashboardStats();
-        fetchFeedbacks();
+      if (conf.url.includes('csv')) {
+        const text = await res.text();
+        if (responseViewer) responseViewer.textContent = text;
+      } else {
+        const json = await res.json();
+        if (responseViewer) responseViewer.textContent = JSON.stringify(json, null, 2);
       }
+      playSound('success');
     } catch (err) {
-      statusCode.textContent = '500 Fetch Error';
-      statusCode.style.color = '#f43f5e';
-      responseViewer.textContent = JSON.stringify({ error: err.message }, null, 2);
+      if (responseViewer) responseViewer.textContent = `// Error executing request: ${err.message}`;
+      if (statusCodeElem) statusCodeElem.textContent = '500 Server Error';
     }
   });
 
   copyCurlBtn?.addEventListener('click', () => {
-    const conf = endpointConfigs[currentTab];
-    if (conf) {
-      copyToClipboard(conf.curl, 'cURL command copied to clipboard!');
-      playSound('action');
+    const conf = endpointConfig[activeEndpoint];
+    const fullUrl = `${window.location.origin}${conf.url}`;
+    let curl = `curl -X ${conf.method} "${fullUrl}"`;
+    if (conf.body) {
+      curl += ` \\\n  -H "Content-Type: application/json" \\\n  -d '${reqBody.value.replace(/\n/g, '')}'`;
     }
+    navigator.clipboard.writeText(curl);
+    playSound('click');
+    showToast('cURL command copied to clipboard!', 'info');
   });
 }
 
 /* ==========================================================================
-   13. UTILITIES & TOASTS
+   14. TOAST NOTIFICATION UTILITY
    ========================================================================== */
 function showToast(message, type = 'info') {
   const container = document.getElementById('toast-container');
@@ -1016,64 +1247,17 @@ function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
 
-  const iconMap = {
-    success: 'fa-solid fa-circle-check',
-    error: 'fa-solid fa-circle-xmark',
-    info: 'fa-solid fa-circle-info'
-  };
-
-  toast.innerHTML = `
-    <i class="${iconMap[type] || iconMap.info}"></i>
-    <span>${message}</span>
-  `;
+  const icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-info');
+  toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${escapeHtml(message)}</span>`;
 
   container.appendChild(toast);
 
   setTimeout(() => {
+    toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
     toast.style.opacity = '0';
-    toast.style.transform = 'translateY(10px)';
-    toast.style.transition = 'all 0.3s ease';
+    toast.style.transform = 'translateX(100%)';
     setTimeout(() => toast.remove(), 300);
   }, 3500);
-}
-
-window.copyToClipboard = function (text, successMsg = 'Copied to clipboard!') {
-  if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(text).then(() => showToast(successMsg, 'success'));
-  } else {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-    showToast(successMsg, 'success');
-  }
-};
-
-function getInitials(name) {
-  if (!name) return 'S';
-  const parts = name.trim().split(' ');
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  return name.slice(0, 2).toUpperCase();
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return 'Just now';
-  try {
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return dateStr;
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  } catch (e) {
-    return dateStr;
-  }
 }
 
 function escapeHtml(str) {

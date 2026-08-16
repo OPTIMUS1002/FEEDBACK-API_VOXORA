@@ -1,9 +1,37 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
+
 const feedbackRoutes = require('./routes/feedbackRoutes');
+const feedbackController = require('./controllers/feedbackController');
 
 const app = express();
+
+// Security Middlewares (with relaxed CSP for Google Fonts & FontAwesome CDNs)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdnjs.cloudflare.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      connectSrc: ["'self'"]
+    }
+  },
+  crossOriginEmbedderPolicy: false
+}));
+
+// Performance Compression (GZIP)
+app.use(compression());
+
+// HTTP Request Logging
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan('dev'));
+}
 
 // Global Middlewares
 app.use(cors());
@@ -12,19 +40,27 @@ app.use(express.json());
 // Serve Static Frontend Assets
 app.use(express.static(path.join(__dirname, '../public')));
 
-// API Info / Health Endpoint
+// API Health / Telemetry Endpoint
+app.get('/api/health', feedbackController.getHealth);
+
+// API Info Endpoint
 app.get('/api', (req, res) => {
   res.json({
     status: 'online',
-    appName: 'Voxora Student Feedback Platform',
-    version: '2.0.0',
+    appName: 'Voxora Quantum Feedback & Intelligence Platform',
+    version: '3.0.0',
     endpoints: {
       getAllFeedback: 'GET /api/feedback',
       getFeedbackStats: 'GET /api/feedback/stats/summary',
       createFeedback: 'POST /api/feedback',
       getFeedbackById: 'GET /api/feedback/:id',
       updateFeedback: 'PUT /api/feedback/:id',
-      deleteFeedback: 'DELETE /api/feedback/:id'
+      deleteFeedback: 'DELETE /api/feedback/:id',
+      likeFeedback: 'POST /api/feedback/:id/like',
+      replyFeedback: 'POST /api/feedback/:id/reply',
+      exportCsv: 'GET /api/feedback/export/csv',
+      exportJson: 'GET /api/feedback/export/json',
+      health: 'GET /api/health'
     }
   });
 });

@@ -1,11 +1,13 @@
 {
   "name": "voxora-feedback-app",
-  "version": "1.0.0",
-  "description": "Cinematic Student Feedback Platform & REST API built with Node.js, Express, and SQLite",
+  "version": "3.0.0",
+  "description": "Cinematic Student Feedback & Analytics Intelligence Platform & REST API built with Node.js, Express, and SQLite",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "seed": "node scripts/seedDatabase.js",
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "keywords": [
     "express",
@@ -13,17 +15,23 @@
     "rest-api",
     "student-feedback",
     "cinematic-ui",
+    "sentiment-analysis",
     "vercel"
   ],
   "author": "Voxora Team",
   "license": "MIT",
   "dependencies": {
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "helmet": "^8.3.0",
+    "morgan": "^1.11.0",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.2.2"
   }
 }
