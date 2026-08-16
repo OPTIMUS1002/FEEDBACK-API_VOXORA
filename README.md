@@ -1,4 +1,4 @@
-# ⚡ VOXORA — Cinematic Student Feedback & Analytics Platform
+ VOXORA — Cinematic Student Feedback & Analytics Platform
 
 An ultra-modern, cinematic **Student Feedback Platform and RESTful API** built with **Node.js**, **Express**, **SQLite**, and vanilla **3D Glassmorphism Web UI** in a striking **Purple, White, and Obsidian Black** aesthetic. 
 
@@ -6,17 +6,17 @@ Designed to be lightweight, lightning fast, and **100% Vercel Serverless Ready**
 
 ---
 
-## 🌌 Visual & Cinematic Features
+ Visual & Cinematic Features
 
-- 🔮 **Obsidian & Neon Purple Palette**: High-contrast, dark-mode design with glowing purple accents (`#9333ea`, `#d946ef`), crisp white highlights, and deep obsidian space background.
-- ✨ **Interactive 3D Particles Canvas**: Physics-driven floating particle mesh background responding in real time.
-- 🎴 **3D Tilt Cards**: Specular lighting reflections and dynamic card perspective tracking mouse coordinates.
-- ⭐ **3D Crystal Star Rating Selector**: Animated 5-star experience rating with instant sentiment feedback badges.
-- 📊 **Real-time Live Analytics Matrix**:
+- Obsidian & Neon Purple Palette**: High-contrast, dark-mode design with glowing purple accents (`#9333ea`, `#d946ef`), crisp white highlights, and deep obsidian space background.
+- Interactive 3D Particles Canvas**: Physics-driven floating particle mesh background responding in real time.
+- 3D Tilt Cards**: Specular lighting reflections and dynamic card perspective tracking mouse coordinates.
+- 3D Crystal Star Rating Selector**: Animated 5-star experience rating with instant sentiment feedback badges.
+- Real-time Live Analytics Matrix**:
   - Live submission counters
   - 5-Star satisfaction distribution percentage bars
   - Course leaderboard ranked by volume & ratings
-- ⚡ **Interactive REST API Explorer**: Built-in developer console to test `GET`, `POST`, `PUT`, `DELETE` endpoints directly with formatted JSON responses and copyable cURL commands.
+ - Interactive REST API Explorer**: Built-in developer console to test `GET`, `POST`, `PUT`, `DELETE` endpoints directly with formatted JSON responses and copyable cURL commands.
 - 💬 **Live Feedbacks Wall**: Real-time search, course filters, sorting (highest rating, newest, oldest), and interactive Edit/Delete modals.
 
 ---
