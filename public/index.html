@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="purple">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VOXORA — Cinematic Student Feedback & Analytics</title>
-  <meta name="description" content="Next-generation student feedback platform with cinematic 3D visual aesthetic, real-time analytics, and REST API.">
+  <title>VOXORA — Next-Gen Student Feedback & Intelligence Platform</title>
+  <meta name="description" content="Next-generation student feedback platform with cinematic 3D visual aesthetic, real-time AI sentiment analysis, analytics matrix, and REST API.">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,7 +37,7 @@
         </div>
         <div class="brand-text">
           <span class="brand-name">VOXORA</span>
-          <span class="brand-badge">API v2.0</span>
+          <span class="brand-badge">PRO v2.5</span>
         </div>
       </div>
 
@@ -48,9 +48,32 @@
         <a href="#api-docs" class="nav-link"><i class="fa-solid fa-code"></i> API Explorer</a>
       </div>
 
-      <div class="nav-actions">
-        <a href="#submit-feedback" class="btn btn-primary btn-glow">
-          <span>Submit Review</span>
+      <div class="nav-controls-right">
+        <!-- Theme Switcher -->
+        <div class="theme-selector-dropdown" title="Change Theme">
+          <button class="control-btn" id="theme-btn">
+            <i class="fa-solid fa-palette"></i>
+          </button>
+          <div class="theme-menu glass-panel" id="theme-menu">
+            <button class="theme-opt active" data-set-theme="purple">💜 Obsidian Purple</button>
+            <button class="theme-opt" data-set-theme="cyan">💙 Cyber Cyan</button>
+            <button class="theme-opt" data-set-theme="emerald">💚 Emerald Matrix</button>
+          </div>
+        </div>
+
+        <!-- Sound FX Toggle -->
+        <button class="control-btn active" id="sound-toggle-btn" title="Toggle Sci-Fi Audio FX">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
+
+        <!-- Admin Mode Toggle -->
+        <button class="control-btn admin-btn" id="admin-mode-btn" title="Admin / Instructor Mode">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span class="admin-badge-dot"></span>
+        </button>
+
+        <a href="#submit-feedback" class="btn btn-primary btn-glow nav-submit-btn">
+          <span>Review</span>
           <i class="fa-solid fa-arrow-right"></i>
         </a>
       </div>
@@ -64,7 +87,7 @@
     <section class="hero-section" id="hero">
       <div class="hero-badge">
         <span class="pulse-dot"></span>
-        <span>STUDENT VOICE INTELLIGENCE ENGINE</span>
+        <span>STUDENT VOICE & AI INTELLIGENCE ENGINE</span>
       </div>
       
       <h1 class="hero-title">
@@ -73,16 +96,19 @@
       </h1>
       
       <p class="hero-subtitle">
-        A state-of-the-art feedback ecosystem powered by real-time analytics, 
-        interactive 3D physics, and high-performance REST APIs.
+        A futuristic ecosystem with real-time AI sentiment analysis, 
+        instant CSV export, interactive 3D physics, and high-performance REST APIs.
       </p>
 
       <div class="hero-cta-group">
         <a href="#submit-feedback" class="btn btn-hero-primary">
-          <i class="fa-solid fa-sparkles"></i> Give Feedback
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Transmit Feedback
         </a>
-        <a href="#api-docs" class="btn btn-hero-secondary">
-          <i class="fa-solid fa-terminal"></i> Explore API Endpoints
+        <button class="btn btn-hero-secondary" id="quick-export-csv-btn">
+          <i class="fa-solid fa-file-csv"></i> Download CSV Report
+        </button>
+        <a href="#api-docs" class="btn btn-hero-outline">
+          <i class="fa-solid fa-terminal"></i> REST API
         </a>
       </div>
     </section>
@@ -91,12 +117,17 @@
     <section class="dashboard-section" id="dashboard">
       <div class="section-header">
         <div class="section-title-wrap">
-          <span class="section-tag">LIVE METRICS</span>
+          <span class="section-tag">LIVE METRICS & AI MATRIX</span>
           <h2 class="section-title">Performance & Sentiment Matrix</h2>
         </div>
-        <button class="btn btn-refresh" id="refresh-stats-btn" title="Refresh Live Data">
-          <i class="fa-solid fa-rotate"></i> Sync Data
-        </button>
+        <div class="section-actions">
+          <button class="btn btn-secondary" id="export-summary-pdf-btn" title="Print/Export Report">
+            <i class="fa-solid fa-print"></i> Print Report
+          </button>
+          <button class="btn btn-refresh" id="refresh-stats-btn" title="Refresh Live Data">
+            <i class="fa-solid fa-rotate"></i> Sync Data
+          </button>
+        </div>
       </div>
 
       <div class="stats-grid">
@@ -133,7 +164,23 @@
           <div class="card-shine"></div>
         </div>
 
-        <!-- Card 3: Top Course -->
+        <!-- Card 3: AI Sentiment Index -->
+        <div class="stat-card glass-panel tilt-card" data-tilt>
+          <div class="stat-icon-wrap emerald-glow">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">AI Sentiment Index</span>
+            <div class="stat-number-wrap">
+              <span class="stat-value highlight-emerald" id="stat-sentiment-score">92%</span>
+              <span class="stat-trend positive">Positive</span>
+            </div>
+          </div>
+          <span class="stat-subtext" id="stat-sentiment-sub">AI Analysis across reviews</span>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Card 4: Top Course -->
         <div class="stat-card glass-panel tilt-card" data-tilt>
           <div class="stat-icon-wrap white-glow">
             <i class="fa-solid fa-award"></i>
@@ -147,21 +194,6 @@
           <span class="stat-subtext" id="stat-top-course-desc">Calculating matrix...</span>
           <div class="card-shine"></div>
         </div>
-
-        <!-- Card 4: Active Courses -->
-        <div class="stat-card glass-panel tilt-card" data-tilt>
-          <div class="stat-icon-wrap cyan-glow">
-            <i class="fa-solid fa-graduation-cap"></i>
-          </div>
-          <div class="stat-info">
-            <span class="stat-label">Courses Evaluated</span>
-            <div class="stat-number-wrap">
-              <span class="stat-value" id="stat-courses-count">--</span>
-            </div>
-          </div>
-          <span class="stat-subtext">Across departments</span>
-          <div class="card-shine"></div>
-        </div>
       </div>
 
       <!-- Rating Breakdown & Analytics Row -->
@@ -173,7 +205,6 @@
             <span class="badge-pill">Satisfaction Scale</span>
           </div>
           <div class="distribution-bars" id="distribution-bars-container">
-            <!-- Dynamic 5 to 1 star bars -->
             <div class="dist-row">
               <span class="dist-star">5 ★</span>
               <div class="dist-track"><div class="dist-fill fill-5" id="bar-5" style="width: 0%"></div></div>
@@ -202,7 +233,7 @@
           </div>
         </div>
 
-        <!-- Course Breakdown -->
+        <!-- Course Leaderboard -->
         <div class="analytics-card glass-panel tilt-card">
           <div class="card-header">
             <h3><i class="fa-solid fa-book-bookmark text-purple"></i> Course Leaderboard</h3>
@@ -220,7 +251,7 @@
       <div class="section-header center">
         <span class="section-tag">SUBMIT YOUR VOICE</span>
         <h2 class="section-title">Shape the Future of Your Courses</h2>
-        <p class="section-desc">Your anonymous & authenticated insights drive curriculum transformation.</p>
+        <p class="section-desc">Your insights drive curriculum transformation with real-time AI sentiment checking.</p>
       </div>
 
       <div class="form-wrapper">
@@ -241,7 +272,6 @@
                     required
                     autocomplete="name"
                   >
-                  <span class="input-focus-border"></span>
                 </div>
               </div>
 
@@ -259,11 +289,10 @@
                     autocomplete="off"
                     style="text-transform: uppercase;"
                   >
-                  <span class="input-focus-border"></span>
                 </div>
                 <!-- Quick Course Tags -->
                 <div class="quick-tags">
-                  <span class="tag-title">Suggestions:</span>
+                  <span class="tag-title">Popular:</span>
                   <button type="button" class="quick-tag" data-code="CS101">CS101</button>
                   <button type="button" class="quick-tag" data-code="AI402">AI402</button>
                   <button type="button" class="quick-tag" data-code="WEB301">WEB301</button>
@@ -306,7 +335,7 @@
               </div>
             </div>
 
-            <!-- Comments / Detailed Review -->
+            <!-- Comments / Detailed Review + AI Sentiment Analysis -->
             <div class="form-group">
               <div class="label-with-counter">
                 <label for="feedback-comments-input">
@@ -321,7 +350,15 @@
                   maxlength="500"
                   placeholder="Share highlights of the lectures, practical lab quality, instructors, assignments, or areas for improvement..."
                 ></textarea>
-                <span class="input-focus-border"></span>
+              </div>
+
+              <!-- Real-time AI Sentiment Badge Preview -->
+              <div class="ai-sentiment-live-box" id="ai-sentiment-box" style="display: none;">
+                <div class="ai-sentiment-tag positive" id="ai-sentiment-tag">
+                  <i class="fa-solid fa-robot"></i>
+                  <span id="ai-sentiment-text">AI Analysis: Positive & Constructive</span>
+                </div>
+                <span class="ai-confidence" id="ai-confidence">95% confidence</span>
               </div>
             </div>
 
@@ -347,15 +384,15 @@
     <section class="feedbacks-section" id="feedbacks-wall">
       <div class="section-header">
         <div class="section-title-wrap">
-          <span class="section-tag">LIVE WALL</span>
-          <h2 class="section-title">Student Experiences Feed</h2>
+          <span class="section-tag">COMMUNITY STREAM</span>
+          <h2 class="section-title">Live Student Experiences</h2>
         </div>
         
         <div class="feed-controls">
           <!-- Search Bar -->
           <div class="search-input-box">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="feed-search-input" placeholder="Search student, course, keywords...">
+            <input type="text" id="feed-search-input" placeholder="Search student, course, keyword...">
             <button type="button" id="clear-search-btn" class="clear-btn" style="display:none;">&times;</button>
           </div>
 
@@ -363,7 +400,6 @@
           <div class="select-filter-box">
             <select id="feed-course-filter">
               <option value="ALL">All Courses</option>
-              <!-- Populated dynamically -->
             </select>
           </div>
 
@@ -376,24 +412,28 @@
               <option value="oldest">Oldest First</option>
             </select>
           </div>
+
+          <!-- Export CSV Button -->
+          <button class="btn btn-secondary btn-icon-only" id="export-csv-btn" title="Export as CSV Spreadsheet">
+            <i class="fa-solid fa-file-arrow-down"></i> CSV
+          </button>
         </div>
       </div>
 
       <!-- Feedbacks Cards Grid -->
       <div class="feedbacks-grid" id="feedbacks-grid">
-        <!-- Dynamically injected feedback cards -->
         <div class="loading-state">
           <i class="fa-solid fa-circle-notch fa-spin"></i> Fetching live student reviews...
         </div>
       </div>
     </section>
 
-    <!-- Interactive API Explorer / Documentation Section -->
+    <!-- Interactive REST API Explorer Section -->
     <section class="api-section" id="api-docs">
       <div class="section-header center">
         <span class="section-tag">DEVELOPER ECOSYSTEM</span>
         <h2 class="section-title">Interactive REST API Explorer</h2>
-        <p class="section-desc">Directly test endpoints or integrate Voxora into your educational apps.</p>
+        <p class="section-desc">Directly test endpoints or integrate Voxora into external educational applications.</p>
       </div>
 
       <div class="api-explorer-card glass-panel tilt-card">
@@ -428,6 +468,28 @@
     </section>
 
   </main>
+
+  <!-- Admin PIN Verification Modal -->
+  <div class="modal-overlay" id="admin-pin-modal" style="display: none;">
+    <div class="modal-card glass-panel modal-card-sm">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-lock text-purple"></i> Admin Authentication</h3>
+        <button class="modal-close-btn" id="close-pin-modal">&times;</button>
+      </div>
+      <p class="modal-desc">Enter Instructor / Admin PIN to unlock edit and deletion privileges (Default PIN: <code>1234</code>):</p>
+      <div class="form-group">
+        <div class="input-glow-wrap">
+          <input type="password" id="admin-pin-input" placeholder="Enter PIN (e.g. 1234)" maxlength="8" autofocus>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-pin-btn">Cancel</button>
+        <button type="button" class="btn btn-primary btn-glow" id="submit-pin-btn">
+          <i class="fa-solid fa-key"></i> Unlock Admin
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Edit Feedback Modal -->
   <div class="modal-overlay" id="edit-modal" style="display: none;">
@@ -500,10 +562,10 @@
     <div class="footer-content">
       <div class="footer-brand">
         <span class="brand-name">VOXORA</span>
-        <p>Ultra-responsive Student Feedback Platform & REST API.</p>
+        <p>AI-Powered Student Feedback & Analytics Intelligence.</p>
       </div>
       <div class="footer-links">
-        <span>Designed with Purple, White & Obsidian Glow</span>
+        <span>Themes: Obsidian Purple • Cyber Cyan • Emerald Matrix</span>
         <span>•</span>
         <span>100% Vercel Serverless Ready</span>
       </div>

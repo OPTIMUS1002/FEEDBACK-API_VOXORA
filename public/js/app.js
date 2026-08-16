@@ -1,22 +1,28 @@
 /**
- * VOXORA — Frontend Logic & 3D Interactive Ecosystem
+ * VOXORA PRO — Next-Gen Student Feedback & Intelligence Platform
+ * Features: AI Sentiment Analysis, Web Audio Sci-Fi FX, Multi-Themes, CSV Export, Admin PIN
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initAmbientCanvas();
   init3DTilt();
+  initThemeSystem();
+  initSoundSystem();
+  initAdminMode();
   initRatingSystem();
-  initFormHandlers();
+  initFormAndSentiment();
   initFiltersAndSearch();
   initModals();
+  initExportFeatures();
   initApiExplorer();
-  
+
   // Initial Data Fetch
   fetchDashboardStats();
   fetchFeedbacks();
 
   // Sync button listener
   document.getElementById('refresh-stats-btn')?.addEventListener('click', () => {
+    playSound('action');
     fetchDashboardStats();
     fetchFeedbacks();
     showToast('Data synchronized with live database!', 'info');
@@ -26,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ==========================================================================
    1. 3D AMBIENT PARTICLES CANVAS
    ========================================================================== */
+let canvasColor = '#a855f7';
+
 function initAmbientCanvas() {
   const canvas = document.getElementById('ambient-canvas');
   if (!canvas) return;
@@ -49,16 +57,9 @@ function initAmbientCanvas() {
       radius: Math.random() * 2 + 0.5,
       vx: (Math.random() - 0.5) * 0.4,
       vy: (Math.random() - 0.5) * 0.4,
-      alpha: Math.random() * 0.5 + 0.2,
-      color: Math.random() > 0.4 ? '#a855f7' : '#d946ef'
+      alpha: Math.random() * 0.5 + 0.2
     });
   }
-
-  let mouse = { x: width / 2, y: height / 2 };
-  window.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
 
   function animate() {
     ctx.clearRect(0, 0, width, height);
@@ -75,13 +76,12 @@ function initAmbientCanvas() {
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
+      ctx.fillStyle = canvasColor;
       ctx.globalAlpha = p.alpha;
       ctx.shadowBlur = 10;
-      ctx.shadowColor = p.color;
+      ctx.shadowColor = canvasColor;
       ctx.fill();
 
-      // Connect near particles
       for (let j = i + 1; j < particles.length; j++) {
         const p2 = particles[j];
         const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
@@ -89,7 +89,7 @@ function initAmbientCanvas() {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = '#9333ea';
+          ctx.strokeStyle = canvasColor;
           ctx.globalAlpha = (1 - dist / 110) * 0.15;
           ctx.lineWidth = 0.6;
           ctx.stroke();
@@ -102,7 +102,7 @@ function initAmbientCanvas() {
 }
 
 /* ==========================================================================
-   2. 3D TILT PHYSICS & SPECULAR SHINE
+   2. 3D TILT PHYSICS
    ========================================================================== */
 function init3DTilt() {
   const cards = document.querySelectorAll('.tilt-card, [data-tilt]');
@@ -116,11 +116,10 @@ function init3DTilt() {
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
 
-      const rotateX = ((y - centerY) / centerY) * -7;
-      const rotateY = ((x - centerX) / centerX) * 7;
+      const rotateX = ((y - centerY) / centerY) * -6;
+      const rotateY = ((x - centerX) / centerX) * 6;
 
       card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
-
       card.style.setProperty('--mouse-x', `${x}px`);
       card.style.setProperty('--mouse-y', `${y}px`);
     });
@@ -132,7 +131,186 @@ function init3DTilt() {
 }
 
 /* ==========================================================================
-   3. INTERACTIVE 3D STAR RATING SYSTEM
+   3. MULTI-THEME SWITCHER
+   ========================================================================== */
+function initThemeSystem() {
+  const themeBtn = document.getElementById('theme-btn');
+  const themeMenu = document.getElementById('theme-menu');
+  const themeOpts = document.querySelectorAll('.theme-opt');
+
+  const savedTheme = localStorage.getItem('voxora_theme') || 'purple';
+  applyTheme(savedTheme);
+
+  themeBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    themeMenu?.classList.toggle('show');
+    playSound('action');
+  });
+
+  document.addEventListener('click', () => {
+    themeMenu?.classList.remove('show');
+  });
+
+  themeOpts.forEach((opt) => {
+    opt.addEventListener('click', () => {
+      const theme = opt.dataset.setTheme;
+      applyTheme(theme);
+      themeMenu?.classList.remove('show');
+      playSound('star', 3);
+      showToast(`Theme switched to ${opt.textContent}`, 'info');
+    });
+  });
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('voxora_theme', theme);
+
+    themeOpts.forEach((o) => o.classList.toggle('active', o.dataset.setTheme === theme));
+
+    if (theme === 'cyan') canvasColor = '#38bdf8';
+    else if (theme === 'emerald') canvasColor = '#10b981';
+    else canvasColor = '#a855f7';
+  }
+}
+
+/* ==========================================================================
+   4. SCI-FI WEB AUDIO SOUND SYSTEM
+   ========================================================================== */
+let soundEnabled = true;
+let audioCtx = null;
+
+function initSoundSystem() {
+  const toggleBtn = document.getElementById('sound-toggle-btn');
+  const savedSound = localStorage.getItem('voxora_sound');
+  soundEnabled = savedSound !== 'disabled';
+  updateSoundBtn();
+
+  toggleBtn?.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('voxora_sound', soundEnabled ? 'enabled' : 'disabled');
+    updateSoundBtn();
+    if (soundEnabled) {
+      playSound('star', 4);
+      showToast('Sci-Fi Sound FX Enabled', 'info');
+    } else {
+      showToast('Sound FX Muted', 'info');
+    }
+  });
+
+  function updateSoundBtn() {
+    if (!toggleBtn) return;
+    toggleBtn.classList.toggle('active', soundEnabled);
+    toggleBtn.innerHTML = soundEnabled
+      ? '<i class="fa-solid fa-volume-high"></i>'
+      : '<i class="fa-solid fa-volume-xmark"></i>';
+  }
+}
+
+function playSound(type, level = 1) {
+  if (!soundEnabled) return;
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'star') {
+      const freqs = [350, 440, 523.25, 659.25, 783.99];
+      const freq = freqs[Math.min(level - 1, 4)] || 440;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + 0.12);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
+    } else if (type === 'submit') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.setValueAtTime(554.37, now + 0.1);
+      osc.frequency.setValueAtTime(659.25, now + 0.2);
+      osc.frequency.setValueAtTime(880, now + 0.3);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+      osc.start(now);
+      osc.stop(now + 0.6);
+    } else if (type === 'action') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(300, now + 0.08);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    }
+  } catch (e) {
+    // Silent fail for audio restrictions
+  }
+}
+
+/* ==========================================================================
+   5. ADMIN / INSTRUCTOR MODE (PIN PROTECTION)
+   ========================================================================== */
+let isAdminMode = false;
+const ADMIN_PIN = '1234';
+
+function initAdminMode() {
+  const adminBtn = document.getElementById('admin-mode-btn');
+  const pinModal = document.getElementById('admin-pin-modal');
+  const pinInput = document.getElementById('admin-pin-input');
+  const submitPinBtn = document.getElementById('submit-pin-btn');
+  const cancelPinBtn = document.getElementById('cancel-pin-btn');
+  const closePinModal = document.getElementById('close-pin-modal');
+
+  adminBtn?.addEventListener('click', () => {
+    playSound('action');
+    if (isAdminMode) {
+      isAdminMode = false;
+      adminBtn.classList.remove('admin-active');
+      showToast('Admin Mode Deactivated.', 'info');
+      fetchFeedbacks();
+    } else {
+      pinModal.style.display = 'flex';
+      if (pinInput) {
+        pinInput.value = '';
+        pinInput.focus();
+      }
+    }
+  });
+
+  function unlockAdmin() {
+    if (pinInput?.value === ADMIN_PIN) {
+      isAdminMode = true;
+      adminBtn?.classList.add('admin-active');
+      pinModal.style.display = 'none';
+      playSound('submit');
+      showToast('🔓 Admin Privileges Unlocked!', 'success');
+      fetchFeedbacks();
+    } else {
+      showToast('❌ Incorrect PIN. Default is 1234', 'error');
+    }
+  }
+
+  submitPinBtn?.addEventListener('click', unlockAdmin);
+  pinInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') unlockAdmin();
+  });
+
+  cancelPinBtn?.addEventListener('click', () => (pinModal.style.display = 'none'));
+  closePinModal?.addEventListener('click', () => (pinModal.style.display = 'none'));
+}
+
+/* ==========================================================================
+   6. 3D STAR RATING SELECTOR
    ========================================================================== */
 const ratingSentiments = {
   1: { icon: '⚠️', text: '1 / 5 — Poor Experience' },
@@ -166,6 +344,7 @@ function initRatingSystem() {
       const rating = parseInt(btn.dataset.rating, 10);
       if (ratingInput) ratingInput.value = rating;
       updateStars(rating);
+      playSound('star', rating);
     });
 
     btn.addEventListener('mouseenter', () => {
@@ -183,9 +362,9 @@ function initRatingSystem() {
 }
 
 /* ==========================================================================
-   4. FORM SUBMISSION & CHARACTER COUNTER
+   7. FORM SUBMISSION & REAL-TIME AI SENTIMENT ENGINE
    ========================================================================== */
-function initFormHandlers() {
+function initFormAndSentiment() {
   const form = document.getElementById('feedback-form');
   const commentsInput = document.getElementById('feedback-comments-input');
   const charCounter = document.getElementById('char-counter');
@@ -193,10 +372,28 @@ function initFormHandlers() {
   const quickTags = document.querySelectorAll('.quick-tag');
   const submitBtn = document.getElementById('submit-btn');
 
-  // Character Counter
+  const sentimentBox = document.getElementById('ai-sentiment-box');
+  const sentimentTag = document.getElementById('ai-sentiment-tag');
+  const sentimentText = document.getElementById('ai-sentiment-text');
+  const confidenceText = document.getElementById('ai-confidence');
+
+  // Real-time sentiment analysis
   commentsInput?.addEventListener('input', (e) => {
-    const count = e.target.value.length;
-    if (charCounter) charCounter.textContent = `${count} / 500`;
+    const text = e.target.value;
+    if (charCounter) charCounter.textContent = `${text.length} / 500`;
+
+    if (text.trim().length > 8) {
+      const sentiment = analyzeSentiment(text);
+      if (sentimentBox) sentimentBox.style.display = 'flex';
+
+      if (sentimentTag && sentimentText && confidenceText) {
+        sentimentTag.className = `ai-sentiment-tag ${sentiment.type}`;
+        sentimentText.textContent = `AI Analysis: ${sentiment.label}`;
+        confidenceText.textContent = `${sentiment.confidence}% confidence`;
+      }
+    } else {
+      if (sentimentBox) sentimentBox.style.display = 'none';
+    }
   });
 
   // Quick Tags
@@ -205,6 +402,7 @@ function initFormHandlers() {
       if (courseInput) {
         courseInput.value = tag.dataset.code;
         courseInput.focus();
+        playSound('action');
       }
     });
   });
@@ -223,7 +421,6 @@ function initFormHandlers() {
       return;
     }
 
-    // Button Loader state
     const btnText = submitBtn.querySelector('.btn-text');
     const btnLoader = submitBtn.querySelector('.btn-loader');
     btnText.style.display = 'none';
@@ -240,13 +437,14 @@ function initFormHandlers() {
       const result = await response.json();
 
       if (response.ok && result.success) {
+        playSound('submit');
         showToast('🎉 Feedback Transmitted Successfully!', 'success');
         form.reset();
         document.getElementById('rating-value').value = 5;
         document.querySelectorAll('#star-rating-box .star-btn').forEach((b) => b.classList.add('active'));
         if (charCounter) charCounter.textContent = '0 / 500';
+        if (sentimentBox) sentimentBox.style.display = 'none';
 
-        // Refresh live stats & wall
         fetchDashboardStats();
         fetchFeedbacks();
       } else {
@@ -263,8 +461,40 @@ function initFormHandlers() {
   });
 }
 
+function analyzeSentiment(text) {
+  const lower = text.toLowerCase();
+  const positiveWords = [
+    'great', 'awesome', 'excellent', 'amazing', 'clear', 'engaging', 'loved', 'helpful',
+    'fantastic', 'best', 'good', 'super', 'interactive', 'brilliant', 'valuable', 'enjoyed'
+  ];
+  const criticalWords = [
+    'hard', 'poor', 'bad', 'confusing', 'boring', 'unclear', 'struggled', 'worst',
+    'disappointed', 'difficult', 'slow', 'waste', 'lacked', 'terrible', 'fix'
+  ];
+
+  let posScore = 0;
+  let critScore = 0;
+
+  positiveWords.forEach((w) => {
+    if (lower.includes(w)) posScore += 1;
+  });
+  criticalWords.forEach((w) => {
+    if (lower.includes(w)) critScore += 1;
+  });
+
+  if (posScore > critScore) {
+    const conf = Math.min(85 + posScore * 4, 99);
+    return { type: 'positive', label: 'Positive & Constructive ✨', confidence: conf };
+  } else if (critScore > posScore) {
+    const conf = Math.min(80 + critScore * 5, 98);
+    return { type: 'critical', label: 'Actionable / Needs Attention ⚠️', confidence: conf };
+  } else {
+    return { type: 'neutral', label: 'Balanced & Neutral ⚖️', confidence: 88 };
+  }
+}
+
 /* ==========================================================================
-   5. DASHBOARD STATS & ANALYTICS FETCH
+   8. DASHBOARD STATS & ANALYTICS FETCH
    ========================================================================== */
 async function fetchDashboardStats() {
   try {
@@ -288,9 +518,12 @@ async function fetchDashboardStats() {
       starsEl.textContent = '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
     }
 
-    // Courses Count
-    const coursesCountEl = document.getElementById('stat-courses-count');
-    if (coursesCountEl) coursesCountEl.textContent = data.courseBreakdown.length;
+    // AI Sentiment Index Calculation
+    const total = data.totalFeedback || 1;
+    const highRatings = (data.ratingDistribution[5] || 0) + (data.ratingDistribution[4] || 0);
+    const sentimentPct = Math.round((highRatings / total) * 100);
+    const sentScoreEl = document.getElementById('stat-sentiment-score');
+    if (sentScoreEl) sentScoreEl.textContent = `${sentimentPct}%`;
 
     // Highest Rated Course
     const topCourseEl = document.getElementById('stat-top-course');
@@ -306,7 +539,6 @@ async function fetchDashboardStats() {
     }
 
     // Rating Distribution Bars
-    const total = data.totalFeedback || 1;
     for (let r = 1; r <= 5; r++) {
       const count = data.ratingDistribution[r] || 0;
       const pct = Math.round((count / total) * 100);
@@ -316,10 +548,7 @@ async function fetchDashboardStats() {
       if (countEl) countEl.textContent = `${count} (${pct}%)`;
     }
 
-    // Course Leaderboard List
     renderCourseLeaderboard(data.courseBreakdown);
-
-    // Update Filter Dropdown with available courses
     updateCourseFilterOptions(data.courseBreakdown);
   } catch (err) {
     console.error('Error fetching dashboard stats:', err);
@@ -372,7 +601,7 @@ function updateCourseFilterOptions(courses) {
 }
 
 /* ==========================================================================
-   6. FEEDBACKS WALL & LIVE RENDER
+   9. FEEDBACKS WALL & CARDS
    ========================================================================== */
 let allFeedbacksCache = [];
 
@@ -424,6 +653,7 @@ function renderFeedbacksGrid(feedbacks) {
       const initials = getInitials(item.studentName);
       const starsHtml = '★'.repeat(item.rating) + '☆'.repeat(5 - item.rating);
       const timeFormatted = formatDate(item.createdAt);
+      const sentiment = analyzeSentiment(item.comments || '');
 
       return `
       <div class="feedback-card glass-panel tilt-card" data-id="${item.id}">
@@ -442,6 +672,9 @@ function renderFeedbacksGrid(feedbacks) {
           <div class="feedback-rating-row">
             <span class="stars-glow">${starsHtml}</span>
             <span class="rating-score-pill">${item.rating}.0 / 5.0</span>
+            <span class="sentiment-pill-mini ${sentiment.type}">
+              <i class="fa-solid fa-brain"></i> ${sentiment.type.toUpperCase()}
+            </span>
           </div>
 
           <p class="feedback-body">${item.comments ? escapeHtml(item.comments) : '<em style="color: var(--text-muted);">No additional comments provided.</em>'}</p>
@@ -452,12 +685,22 @@ function renderFeedbacksGrid(feedbacks) {
             <i class="fa-solid fa-hashtag"></i> ID: ${item.id}
           </span>
           <div class="card-action-btns">
-            <button class="card-btn btn-card-edit" title="Edit Feedback" onclick="openEditModal(${item.id})">
-              <i class="fa-solid fa-pen"></i>
-            </button>
-            <button class="card-btn btn-card-delete" title="Delete Feedback" onclick="openDeleteModal(${item.id})">
-              <i class="fa-solid fa-trash"></i>
-            </button>
+            ${
+              isAdminMode
+                ? `
+              <button class="card-btn btn-card-edit" title="Edit (Admin)" onclick="openEditModal(${item.id})">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button class="card-btn btn-card-delete" title="Delete (Admin)" onclick="openDeleteModal(${item.id})">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            `
+                : `
+              <button class="card-btn" title="Click to copy review text" onclick="copyToClipboard('${escapeHtml(item.comments || item.courseCode)}', 'Review copied!')">
+                <i class="fa-regular fa-copy"></i>
+              </button>
+            `
+            }
           </div>
         </div>
         <div class="card-shine"></div>
@@ -466,12 +709,58 @@ function renderFeedbacksGrid(feedbacks) {
     })
     .join('');
 
-  // Re-attach 3D Tilt to newly rendered cards
   init3DTilt();
 }
 
 /* ==========================================================================
-   7. FILTERS & SEARCH
+   10. EXPORT TO CSV & PRINT REPORT
+   ========================================================================== */
+function initExportFeatures() {
+  const exportCsvBtn = document.getElementById('export-csv-btn');
+  const quickExportCsvBtn = document.getElementById('quick-export-csv-btn');
+  const exportPdfBtn = document.getElementById('export-summary-pdf-btn');
+
+  function exportCSV() {
+    playSound('action');
+    if (!allFeedbacksCache || allFeedbacksCache.length === 0) {
+      showToast('No feedbacks available to export.', 'error');
+      return;
+    }
+
+    const headers = ['ID', 'Student Name', 'Course Code', 'Rating', 'Comments', 'Created At'];
+    const rows = allFeedbacksCache.map((item) => [
+      item.id,
+      `"${(item.studentName || '').replace(/"/g, '""')}"`,
+      `"${(item.courseCode || '').replace(/"/g, '""')}"`,
+      item.rating,
+      `"${(item.comments || '').replace(/"/g, '""')}"`,
+      `"${item.createdAt || ''}"`
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Voxora_Student_Feedbacks_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast('📊 CSV Report Downloaded!', 'success');
+  }
+
+  exportCsvBtn?.addEventListener('click', exportCSV);
+  quickExportCsvBtn?.addEventListener('click', exportCSV);
+
+  exportPdfBtn?.addEventListener('click', () => {
+    playSound('action');
+    window.print();
+  });
+}
+
+/* ==========================================================================
+   11. FILTERS, SEARCH & MODALS
    ========================================================================== */
 function initFiltersAndSearch() {
   const searchInput = document.getElementById('feed-search-input');
@@ -498,9 +787,6 @@ function initFiltersAndSearch() {
   sortSelect?.addEventListener('change', () => fetchFeedbacks());
 }
 
-/* ==========================================================================
-   8. EDIT & DELETE MODALS
-   ========================================================================== */
 function initModals() {
   const editModal = document.getElementById('edit-modal');
   const deleteModal = document.getElementById('delete-modal');
@@ -511,7 +797,6 @@ function initModals() {
   const editForm = document.getElementById('edit-feedback-form');
   const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 
-  // Edit Modal Star Selector
   const modalStars = document.querySelectorAll('#edit-stars-box .modal-star-btn');
   const editRatingInput = document.getElementById('edit-rating-value');
 
@@ -522,6 +807,7 @@ function initModals() {
       modalStars.forEach((b) => {
         b.classList.toggle('active', parseInt(b.dataset.rating, 10) <= r);
       });
+      playSound('star', r);
     });
   });
 
@@ -531,7 +817,6 @@ function initModals() {
   closeDeleteBtn?.addEventListener('click', () => (deleteModal.style.display = 'none'));
   cancelDeleteBtn?.addEventListener('click', () => (deleteModal.style.display = 'none'));
 
-  // Save Edit Handler
   editForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('edit-feedback-id').value;
@@ -549,6 +834,7 @@ function initModals() {
 
       const data = await res.json();
       if (res.ok && data.success) {
+        playSound('submit');
         showToast('Feedback updated successfully!', 'success');
         editModal.style.display = 'none';
         fetchDashboardStats();
@@ -557,12 +843,10 @@ function initModals() {
         showToast(data.error || 'Failed to update feedback', 'error');
       }
     } catch (err) {
-      console.error('Update error:', err);
       showToast('Network error during update.', 'error');
     }
   });
 
-  // Confirm Delete Handler
   confirmDeleteBtn?.addEventListener('click', async () => {
     const id = document.getElementById('delete-feedback-id').value;
     if (!id) return;
@@ -572,6 +856,7 @@ function initModals() {
       const data = await res.json();
 
       if (res.ok && data.success) {
+        playSound('action');
         showToast('Feedback deleted successfully.', 'info');
         deleteModal.style.display = 'none';
         fetchDashboardStats();
@@ -580,13 +865,11 @@ function initModals() {
         showToast(data.error || 'Failed to delete feedback', 'error');
       }
     } catch (err) {
-      console.error('Delete error:', err);
       showToast('Network error during deletion.', 'error');
     }
   });
 }
 
-// Global modal triggers for card action buttons
 window.openEditModal = function (id) {
   const item = allFeedbacksCache.find((f) => f.id === id);
   if (!item) return;
@@ -603,15 +886,17 @@ window.openEditModal = function (id) {
   });
 
   document.getElementById('edit-modal').style.display = 'flex';
+  playSound('action');
 };
 
 window.openDeleteModal = function (id) {
   document.getElementById('delete-feedback-id').value = id;
   document.getElementById('delete-modal').style.display = 'flex';
+  playSound('action');
 };
 
 /* ==========================================================================
-   9. REST API EXPLORER
+   12. REST API EXPLORER
    ========================================================================== */
 function initApiExplorer() {
   const tabs = document.querySelectorAll('.api-tab');
@@ -663,14 +948,15 @@ function initApiExplorer() {
         methodBadge.className = `http-method-badge ${conf.badgeClass}`;
         urlDisplay.textContent = conf.url;
       }
+      playSound('action');
     });
   });
 
-  // Execute Endpoint Request
   executeBtn?.addEventListener('click', async () => {
     const conf = endpointConfigs[currentTab];
     if (!conf) return;
 
+    playSound('action');
     responseViewer.textContent = '// Sending request to ' + conf.url + ' ...';
     const startTime = performance.now();
 
@@ -700,7 +986,6 @@ function initApiExplorer() {
 
       responseViewer.textContent = JSON.stringify(data, null, 2);
 
-      // Refresh dashboard if we created a record
       if (conf.method === 'POST') {
         fetchDashboardStats();
         fetchFeedbacks();
@@ -712,17 +997,17 @@ function initApiExplorer() {
     }
   });
 
-  // Copy cURL Command
   copyCurlBtn?.addEventListener('click', () => {
     const conf = endpointConfigs[currentTab];
     if (conf) {
       copyToClipboard(conf.curl, 'cURL command copied to clipboard!');
+      playSound('action');
     }
   });
 }
 
 /* ==========================================================================
-   10. UTILITIES & TOASTS
+   13. UTILITIES & TOASTS
    ========================================================================== */
 function showToast(message, type = 'info') {
   const container = document.getElementById('toast-container');
