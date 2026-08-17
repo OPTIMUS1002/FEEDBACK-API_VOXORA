@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="purple">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOXORA QUANTUM — Next-Gen Student Feedback & Intelligence Platform</title>
+  <meta name="description" content="Next-generation student feedback and intelligence platform featuring holographic 3D visuals, real-time AI sentiment analysis, analytics matrix, and high-performance REST APIs.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="cinematic-theme">
+  
+  <!-- Dynamic Ambient Cursor Follower Glow -->
+  <div class="cursor-glow" id="cursor-glow"></div>
+
+  <!-- 3D Glowing Ambient Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Ambient Glowing Orbs -->
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
+  <div class="ambient-orb orb-3"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar-wrapper">
+    <nav class="navbar glass-panel">
+      <!-- Hyper-Cool Holographic Logo -->
+      <a href="#hero" class="brand-container" id="brand-logo-btn" title="Voxora Quantum">
+        <div class="hologram-logo-wrap" id="nav-logo-hologram">
+          <svg class="hologram-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="logoGradCore" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="var(--logo-grad-1, #d946ef)" />
+                <stop offset="50%" stop-color="var(--logo-grad-2, #8b5cf6)" />
+                <stop offset="100%" stop-color="var(--logo-grad-3, #06b6d4)" />
+              </linearGradient>
+              <linearGradient id="ringGrad1" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="var(--purple-neon, #d946ef)" />
+                <stop offset="50%" stop-color="#ffffff" />
+                <stop offset="100%" stop-color="var(--cyan-neon, #06b6d4)" />
+              </linearGradient>
+              <radialGradient id="crystalGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+                <stop offset="40%" stop-color="var(--purple-neon, #d946ef)" stop-opacity="0.8" />
+                <stop offset="100%" stop-color="transparent" stop-opacity="0" />
+              </radialGradient>
+              <filter id="hyperGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="4" result="blur1" />
+                <feGaussianBlur stdDeviation="1.5" result="blur2" />
+                <feMerge>
+                  <feMergeNode in="blur1" />
+                  <feMergeNode in="blur2" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Cyber HUD Corner Accents -->
+            <path d="M12 24 L12 12 L24 12" stroke="var(--purple-neon)" stroke-width="1.8" stroke-linecap="round" opacity="0.8" class="hud-bracket" />
+            <path d="M88 24 L88 12 L76 12" stroke="var(--cyan-neon)" stroke-width="1.8" stroke-linecap="round" opacity="0.8" class="hud-bracket" />
+            <path d="M12 76 L12 88 L24 88" stroke="var(--cyan-neon)" stroke-width="1.8" stroke-linecap="round" opacity="0.8" class="hud-bracket" />
+            <path d="M88 76 L88 88 L76 88" stroke="var(--purple-neon)" stroke-width="1.8" stroke-linecap="round" opacity="0.8" class="hud-bracket" />
+
+            <!-- Outer Segmented Gyroscope Orbit Ring (Rotates CW) -->
+            <circle cx="50" cy="50" r="42" stroke="url(#ringGrad1)" stroke-width="2" stroke-dasharray="14 8 26 8" class="logo-orbit-ring" opacity="0.95" />
+            
+            <!-- Middle Cyber Gauge Ticks Ring (Rotates CCW) -->
+            <circle cx="50" cy="50" r="34" stroke="var(--cyan-neon, #06b6d4)" stroke-width="1.2" stroke-dasharray="4 6" class="logo-orbit-ring-reverse" opacity="0.75" />
+            
+            <!-- Inner Acoustic Frequency Waveform Ring -->
+            <circle cx="50" cy="50" r="26" stroke="var(--purple-primary, #a855f7)" stroke-width="1.4" stroke-dasharray="2 4 8 4" class="logo-wave-ring" opacity="0.65" />
+
+            <!-- Dynamic Sonic Equalizer Frequency Rays (Radiating outward) -->
+            <g class="logo-freq-rays" opacity="0.85">
+              <line x1="50" y1="8" x2="50" y2="16" stroke="#ffffff" stroke-width="2" stroke-linecap="round" filter="url(#hyperGlow)" class="ray ray-1" />
+              <line x1="92" y1="50" x2="84" y2="50" stroke="var(--purple-neon)" stroke-width="2" stroke-linecap="round" filter="url(#hyperGlow)" class="ray ray-2" />
+              <line x1="50" y1="92" x2="50" y2="84" stroke="var(--cyan-neon)" stroke-width="2" stroke-linecap="round" filter="url(#hyperGlow)" class="ray ray-3" />
+              <line x1="8" y1="50" x2="16" y2="50" stroke="#ffffff" stroke-width="2" stroke-linecap="round" filter="url(#hyperGlow)" class="ray ray-4" />
+              <!-- Diagonal Micro Nodes -->
+              <circle cx="23" cy="23" r="2" fill="var(--purple-neon)" filter="url(#hyperGlow)" class="node-spark" />
+              <circle cx="77" cy="23" r="2" fill="var(--cyan-neon)" filter="url(#hyperGlow)" class="node-spark" />
+              <circle cx="77" cy="77" r="2" fill="#ffffff" filter="url(#hyperGlow)" class="node-spark" />
+              <circle cx="23" cy="77" r="2" fill="var(--purple-neon)" filter="url(#hyperGlow)" class="node-spark" />
+            </g>
+
+            <!-- Quantum Core Faceted Crystal Prism -->
+            <polygon points="50,16 76,50 50,84 24,50" fill="url(#crystalGlow)" opacity="0.4" class="logo-crystal-prism" />
+            <polygon points="50,22 70,50 50,78 30,50" fill="url(#logoGradCore)" opacity="0.3" class="logo-crystal-inner" />
+            
+            <!-- High-Energy Lightning 'V' Glyph -->
+            <path d="M34 32 L46 64 L50 49 L66 32 L52 74 L48 74 L34 32 Z" fill="url(#logoGradCore)" filter="url(#hyperGlow)" class="logo-core-glyph" />
+
+            <!-- Pulsing Quantum Singularity Center Orb -->
+            <circle cx="50" cy="50" r="5" fill="#ffffff" filter="url(#hyperGlow)" class="logo-center-singularity" />
+          </svg>
+          <div class="logo-aura-glow"></div>
+          <div class="logo-shockwave-ring" id="nav-shockwave"></div>
+        </div>
+        
+        <div class="brand-text">
+          <div class="brand-name-wrap">
+            <span class="brand-name">VOXORA</span>
+            <span class="brand-name-glitch">VOXORA</span>
+          </div>
+          <div class="brand-badge-row">
+            <span class="brand-badge"><i class="fa-solid fa-atom"></i> QUANTUM v3.0</span>
+            <span class="brand-live-indicator" title="System Operational"><span class="pulse-dot-sm"></span> LIVE</span>
+          </div>
+        </div>
+      </a>
+
+      <div class="nav-links">
+        <a href="#dashboard" class="nav-link active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="#submit-feedback" class="nav-link"><i class="fa-solid fa-pen-nib"></i> Transmit</a>
+        <a href="#feedbacks-wall" class="nav-link"><i class="fa-solid fa-layer-group"></i> Feedbacks</a>
+        <a href="#api-docs" class="nav-link"><i class="fa-solid fa-code"></i> REST API</a>
+      </div>
+
+      <div class="nav-controls-right">
+        <!-- 5 Futuristic Themes Switcher -->
+        <div class="theme-selector-dropdown" title="Change Theme System">
+          <button class="control-btn" id="theme-btn">
+            <i class="fa-solid fa-palette"></i>
+          </button>
+          <div class="theme-menu glass-panel" id="theme-menu">
+            <button class="theme-opt active" data-set-theme="purple">💜 Obsidian Purple</button>
+            <button class="theme-opt" data-set-theme="cyan">💙 Cyber Cyan</button>
+            <button class="theme-opt" data-set-theme="emerald">💚 Emerald Matrix</button>
+            <button class="theme-opt" data-set-theme="solaris">⚡ Hyper Solaris</button>
+            <button class="theme-opt" data-set-theme="glacial">❄️ Glacial Void</button>
+          </div>
+        </div>
+
+        <!-- Sci-Fi Sound FX Toggle -->
+        <button class="control-btn active" id="sound-toggle-btn" title="Toggle Sci-Fi Audio FX">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
+
+        <!-- Admin / Instructor Mode -->
+        <button class="control-btn admin-btn" id="admin-mode-btn" title="Instructor / Admin Authentication">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span class="admin-badge-dot"></span>
+        </button>
+
+        <a href="#submit-feedback" class="btn btn-primary btn-glow nav-submit-btn">
+          <span>Feedback</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      
+      <!-- Interactive 3D Hero Hologram Centerpiece -->
+      <div class="hero-hologram-centerpiece" id="hero-hologram-sphere" title="Interactive 3D Quantum Core - Click to Transmit Energy">
+        <div class="hero-orb-ring ring-outer"></div>
+        <div class="hero-orb-ring ring-middle"></div>
+        <div class="hero-orb-ring ring-inner"></div>
+        
+        <!-- Center Hologram SVG Prism -->
+        <div class="hero-orb-core">
+          <svg class="hero-core-svg" viewBox="0 0 120 120" fill="none">
+            <polygon points="60,10 102,35 102,85 60,110 18,85 18,35" stroke="var(--purple-neon)" stroke-width="2" stroke-dasharray="10 6" class="hero-prism-hex" />
+            <polygon points="60,25 90,42 90,78 60,95 30,78 30,42" fill="url(#logoGradCore)" opacity="0.35" class="hero-prism-inner" />
+            <path d="M42 40 L56 78 L60 60 L78 40 L62 90 L58 90 L42 40 Z" fill="url(#logoGradCore)" filter="url(#hyperGlow)" class="hero-glyph-v" />
+            <circle cx="60" cy="60" r="8" fill="#ffffff" filter="url(#hyperGlow)" class="hero-singularity" />
+          </svg>
+        </div>
+
+        <!-- Live Audio Equalizer Orbit Spectrum -->
+        <div class="hero-audio-spectrum" id="hero-audio-spectrum">
+          <span class="spectrum-bar bar-1"></span>
+          <span class="spectrum-bar bar-2"></span>
+          <span class="spectrum-bar bar-3"></span>
+          <span class="spectrum-bar bar-4"></span>
+          <span class="spectrum-bar bar-5"></span>
+          <span class="spectrum-bar bar-6"></span>
+          <span class="spectrum-bar bar-7"></span>
+          <span class="spectrum-bar bar-8"></span>
+        </div>
+
+        <div class="hero-orb-aura"></div>
+      </div>
+
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        <span>STUDENT VOICE INTELLIGENCE ENGINE &bull; QUANTUM 2026</span>
+      </div>
+      
+      <h1 class="hero-title">
+        Empower Learning with <br>
+        <span class="text-gradient">Cinematic Feedback</span>
+      </h1>
+      
+      <p class="hero-subtitle">
+        A next-generation academic feedback ecosystem featuring real-time AI sentiment analysis, 
+        instant CSV & JSON data streams, interactive 3D physics, upvotes, and high-performance REST APIs.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#submit-feedback" class="btn btn-hero-primary">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Transmit Feedback
+        </a>
+        <button class="btn btn-hero-secondary" id="quick-export-csv-btn">
+          <i class="fa-solid fa-file-csv"></i> Download CSV Report
+        </button>
+        <button class="btn btn-hero-secondary" id="quick-export-json-btn">
+          <i class="fa-solid fa-file-code"></i> JSON Dataset
+        </button>
+        <a href="#api-docs" class="btn btn-hero-outline">
+          <i class="fa-solid fa-terminal"></i> REST API Explorer
+        </a>
+      </div>
+
+      <!-- Quick Metrics Ribbon -->
+      <div class="hero-ribbon glass-panel">
+        <div class="ribbon-item">
+          <i class="fa-solid fa-bolt-lightning text-purple"></i>
+          <div>
+            <span class="ribbon-val" id="ribbon-speed">&lt; 15ms</span>
+            <span class="ribbon-lbl">Ultra-Low Latency</span>
+          </div>
+        </div>
+        <div class="ribbon-divider"></div>
+        <div class="ribbon-item">
+          <i class="fa-solid fa-robot text-purple"></i>
+          <div>
+            <span class="ribbon-val" id="ribbon-ai">Live AI</span>
+            <span class="ribbon-lbl">Emotion Parsing</span>
+          </div>
+        </div>
+        <div class="ribbon-divider"></div>
+        <div class="ribbon-item">
+          <i class="fa-solid fa-cloud-arrow-up text-purple"></i>
+          <div>
+            <span class="ribbon-val">Vercel Ready</span>
+            <span class="ribbon-lbl">Serverless SQLite</span>
+          </div>
+        </div>
+        <div class="ribbon-divider"></div>
+        <div class="ribbon-item">
+          <i class="fa-solid fa-thumbs-up text-purple"></i>
+          <div>
+            <span class="ribbon-val" id="ribbon-reactions">0</span>
+            <span class="ribbon-lbl">Helpful Reactions</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Analytics Dashboard Stats -->
+    <section class="dashboard-section" id="dashboard">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-tag">LIVE METRICS & AI MATRIX</span>
+          <h2 class="section-title">Performance & Sentiment Matrix</h2>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-secondary" id="export-summary-pdf-btn" title="Print/Export Report">
+            <i class="fa-solid fa-print"></i> Print Report
+          </button>
+          <button class="btn btn-refresh" id="refresh-stats-btn" title="Refresh Live Data">
+            <i class="fa-solid fa-rotate"></i> Sync Live Data
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <!-- Card 1: Total Feedbacks -->
+        <div class="stat-card glass-panel tilt-card" data-tilt>
+          <div class="stat-icon-wrap purple-glow">
+            <i class="fa-solid fa-comments"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Submissions</span>
+            <div class="stat-number-wrap">
+              <span class="stat-value" id="stat-total-count">--</span>
+              <span class="stat-trend positive"><i class="fa-solid fa-arrow-trend-up"></i> Live</span>
+            </div>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Card 2: Overall Rating -->
+        <div class="stat-card glass-panel tilt-card" data-tilt>
+          <div class="stat-icon-wrap violet-glow">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Overall Average Rating</span>
+            <div class="stat-number-wrap">
+              <span class="stat-value" id="stat-avg-rating">--</span>
+              <span class="stat-max">/ 5.0</span>
+            </div>
+          </div>
+          <div class="rating-stars-preview" id="stat-stars-render">
+            ★★★★★
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Card 3: AI Sentiment Index -->
+        <div class="stat-card glass-panel tilt-card" data-tilt>
+          <div class="stat-icon-wrap emerald-glow">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">AI Sentiment Index</span>
+            <div class="stat-number-wrap">
+              <span class="stat-value highlight-emerald" id="stat-sentiment-score">94%</span>
+              <span class="stat-trend positive" id="stat-sentiment-trend">Positive</span>
+            </div>
+          </div>
+          <span class="stat-subtext" id="stat-sentiment-sub">Automated emotion scoring</span>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Card 4: Top Course -->
+        <div class="stat-card glass-panel tilt-card" data-tilt>
+          <div class="stat-icon-wrap white-glow">
+            <i class="fa-solid fa-award"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Highest Rated Course</span>
+            <div class="stat-number-wrap">
+              <span class="stat-value highlight" id="stat-top-course">--</span>
+            </div>
+          </div>
+          <span class="stat-subtext" id="stat-top-course-desc">Calculating matrix...</span>
+          <div class="card-shine"></div>
+        </div>
+      </div>
+
+      <!-- Rating Breakdown & Analytics Row -->
+      <div class="analytics-row">
+        <!-- Rating Distribution & Donut Gauge -->
+        <div class="analytics-card glass-panel tilt-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-chart-simple text-purple"></i> Rating Distribution</h3>
+            <span class="badge-pill">5-Star Spectrum</span>
+          </div>
+
+          <div class="rating-visual-split">
+            <!-- Dynamic SVG Donut Chart -->
+            <div class="donut-chart-wrap">
+              <svg class="donut-svg" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="48" class="donut-track" />
+                <circle cx="60" cy="60" r="48" class="donut-segment" id="donut-score-segment" stroke-dasharray="301.59" stroke-dashoffset="40" />
+              </svg>
+              <div class="donut-inner-content">
+                <span class="donut-val" id="donut-rating-val">4.8</span>
+                <span class="donut-lbl">SCORE</span>
+              </div>
+            </div>
+
+            <!-- Distribution Bars -->
+            <div class="distribution-bars" id="distribution-bars-container">
+              <div class="dist-row">
+                <span class="dist-star">5 ★</span>
+                <div class="dist-track"><div class="dist-fill fill-5" id="bar-5" style="width: 0%"></div></div>
+                <span class="dist-count" id="count-5">0</span>
+              </div>
+              <div class="dist-row">
+                <span class="dist-star">4 ★</span>
+                <div class="dist-track"><div class="dist-fill fill-4" id="bar-4" style="width: 0%"></div></div>
+                <span class="dist-count" id="count-4">0</span>
+              </div>
+              <div class="dist-row">
+                <span class="dist-star">3 ★</span>
+                <div class="dist-track"><div class="dist-fill fill-3" id="bar-3" style="width: 0%"></div></div>
+                <span class="dist-count" id="count-3">0</span>
+              </div>
+              <div class="dist-row">
+                <span class="dist-star">2 ★</span>
+                <div class="dist-track"><div class="dist-fill fill-2" id="bar-2" style="width: 0%"></div></div>
+                <span class="dist-count" id="count-2">0</span>
+              </div>
+              <div class="dist-row">
+                <span class="dist-star">1 ★</span>
+                <div class="dist-track"><div class="dist-fill fill-1" id="bar-1" style="width: 0%"></div></div>
+                <span class="dist-count" id="count-1">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course Leaderboard & Category Chips -->
+        <div class="analytics-card glass-panel tilt-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-book-bookmark text-purple"></i> Course Leaderboard</h3>
+            <span class="badge-pill">Click Course to Filter</span>
+          </div>
+          <div class="course-list-wrap" id="course-leaderboard-container">
+            <div class="loading-state">Loading course rankings...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feedback Submission Form Section -->
+    <section class="submission-section" id="submit-feedback">
+      <div class="section-header center">
+        <span class="section-tag">TRANSMIT YOUR VOICE</span>
+        <h2 class="section-title">Shape the Future of Your Courses</h2>
+        <p class="section-desc">Your genuine insights drive curriculum transformation with real-time AI sentiment checking.</p>
+      </div>
+
+      <div class="form-wrapper">
+        <div class="form-card glass-panel tilt-card" id="feedback-form-card">
+          <form id="feedback-form">
+            
+            <div class="form-row">
+              <!-- Student Name -->
+              <div class="form-group">
+                <label for="student-name-input">
+                  <i class="fa-regular fa-user"></i> Student Name / Alias <span class="required">*</span>
+                </label>
+                <div class="input-glow-wrap">
+                  <input 
+                    type="text" 
+                    id="student-name-input" 
+                    placeholder="e.g. Alex Morgan" 
+                    required
+                    autocomplete="name"
+                  >
+                </div>
+              </div>
+
+              <!-- Course Code -->
+              <div class="form-group">
+                <label for="course-code-input">
+                  <i class="fa-solid fa-code-branch"></i> Course Code <span class="required">*</span>
+                </label>
+                <div class="input-glow-wrap">
+                  <input 
+                    type="text" 
+                    id="course-code-input" 
+                    placeholder="e.g. AI402, CS101, WEB301, DS200" 
+                    required
+                    autocomplete="off"
+                    style="text-transform: uppercase;"
+                  >
+                </div>
+                <!-- Popular Course Quick Tags -->
+                <div class="quick-tags">
+                  <span class="tag-title">Popular:</span>
+                  <button type="button" class="quick-tag" data-code="AI402">AI402</button>
+                  <button type="button" class="quick-tag" data-code="CS101">CS101</button>
+                  <button type="button" class="quick-tag" data-code="WEB301">WEB301</button>
+                  <button type="button" class="quick-tag" data-code="DS200">DS200</button>
+                  <button type="button" class="quick-tag" data-code="UX102">UX102</button>
+                  <button type="button" class="quick-tag" data-code="CYBER204">CYBER204</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Feedback Category & Semester Selection -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="feedback-category-select">
+                  <i class="fa-solid fa-list-check"></i> Feedback Category
+                </label>
+                <div class="input-glow-wrap select-wrap">
+                  <select id="feedback-category-select">
+                    <option value="Lecture Quality">Lecture Quality & Teaching</option>
+                    <option value="Lab Experience" selected>Lab Experience & Projects</option>
+                    <option value="Course Material">Course Material & Resources</option>
+                    <option value="Grading & Exams">Grading, Exams & Assignments</option>
+                    <option value="General">General Experience</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="feedback-semester-input">
+                  <i class="fa-regular fa-calendar-days"></i> Academic Semester
+                </label>
+                <div class="input-glow-wrap">
+                  <input type="text" id="feedback-semester-input" value="Spring 2026">
+                </div>
+              </div>
+            </div>
+
+            <!-- Smart Tag Selector -->
+            <div class="form-group">
+              <label><i class="fa-solid fa-tags"></i> Topic Highlights (Click to add tags)</label>
+              <div class="interactive-tags-pill-box" id="form-tag-pills">
+                <span class="form-pill" data-tag="#HandsOnLab">#HandsOnLab</span>
+                <span class="form-pill" data-tag="#ClearLectures">#ClearLectures</span>
+                <span class="form-pill" data-tag="#GreatFeedback">#GreatFeedback</span>
+                <span class="form-pill" data-tag="#Engaging">#Engaging</span>
+                <span class="form-pill" data-tag="#ToughExams">#ToughExams</span>
+                <span class="form-pill" data-tag="#HelpfulTA">#HelpfulTA</span>
+                <span class="form-pill" data-tag="#FastGrading">#FastGrading</span>
+                <span class="form-pill" data-tag="#DesignSystems">#DesignSystems</span>
+              </div>
+              <input type="hidden" id="selected-tags-hidden" value="[]">
+            </div>
+
+            <!-- 3D Star Rating Selector -->
+            <div class="form-group rating-form-group">
+              <label>
+                <i class="fa-solid fa-star-half-stroke"></i> Experience Rating <span class="required">*</span>
+              </label>
+              
+              <div class="interactive-rating-container">
+                <div class="stars-3d-box" id="star-rating-box">
+                  <button type="button" class="star-btn" data-rating="1" title="1 Star - Needs Substantial Work">
+                    <i class="fa-solid fa-star"></i>
+                  </button>
+                  <button type="button" class="star-btn" data-rating="2" title="2 Stars - Needs Improvement">
+                    <i class="fa-solid fa-star"></i>
+                  </button>
+                  <button type="button" class="star-btn" data-rating="3" title="3 Stars - Average Experience">
+                    <i class="fa-solid fa-star"></i>
+                  </button>
+                  <button type="button" class="star-btn" data-rating="4" title="4 Stars - Very Good Experience">
+                    <i class="fa-solid fa-star"></i>
+                  </button>
+                  <button type="button" class="star-btn active" data-rating="5" title="5 Stars - Outstanding Experience">
+                    <i class="fa-solid fa-star"></i>
+                  </button>
+                </div>
+                <input type="hidden" id="rating-value" value="5">
+                
+                <div class="rating-feedback-badge" id="rating-sentiment-badge">
+                  <span class="badge-icon">✨</span>
+                  <span class="badge-text">5 / 5 — Outstanding Experience</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comments / Detailed Review + AI Sentiment Analysis -->
+            <div class="form-group">
+              <div class="label-with-counter">
+                <label for="feedback-comments-input">
+                  <i class="fa-regular fa-message"></i> Detailed Feedback & Suggestions
+                </label>
+                <span class="char-counter" id="char-counter">0 / 500</span>
+              </div>
+              <div class="input-glow-wrap">
+                <textarea 
+                  id="feedback-comments-input" 
+                  rows="4" 
+                  maxlength="500"
+                  placeholder="Share highlights of the lectures, practical lab quality, instructors, assignments, or recommendations..."
+                ></textarea>
+              </div>
+
+              <!-- Real-time AI Sentiment Badge Preview -->
+              <div class="ai-sentiment-live-box" id="ai-sentiment-box" style="display: none;">
+                <div class="ai-sentiment-tag positive" id="ai-sentiment-tag">
+                  <i class="fa-solid fa-robot"></i>
+                  <span id="ai-sentiment-text">AI Analysis: Positive & Constructive</span>
+                </div>
+                <span class="ai-confidence" id="ai-confidence">96% confidence</span>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-submit-wrap">
+              <button type="submit" class="btn btn-submit-glow" id="submit-btn">
+                <span class="btn-text">
+                  <i class="fa-solid fa-paper-plane"></i> Transmit Feedback
+                </span>
+                <div class="btn-loader" style="display: none;">
+                  <i class="fa-solid fa-circle-notch fa-spin"></i> Transmitting to database...
+                </div>
+              </button>
+            </div>
+
+          </form>
+          <div class="card-shine"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Feedbacks Wall Section -->
+    <section class="feedbacks-section" id="feedbacks-wall">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-tag">COMMUNITY STREAM</span>
+          <h2 class="section-title">Live Student Experiences</h2>
+        </div>
+        
+        <!-- Action Toolbar -->
+        <div class="feed-controls">
+          <!-- Search Bar -->
+          <div class="search-input-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="feed-search-input" placeholder="Search student, course, tags, keywords...">
+            <button type="button" id="clear-search-btn" class="clear-btn" style="display:none;">&times;</button>
+          </div>
+
+          <!-- Category Filter -->
+          <div class="select-filter-box">
+            <select id="feed-category-filter">
+              <option value="ALL">All Categories</option>
+              <option value="Lecture Quality">Lecture Quality</option>
+              <option value="Lab Experience">Lab Experience</option>
+              <option value="Course Material">Course Material</option>
+              <option value="Grading & Exams">Grading & Exams</option>
+            </select>
+          </div>
+
+          <!-- Course Filter Dropdown -->
+          <div class="select-filter-box">
+            <select id="feed-course-filter">
+              <option value="ALL">All Courses</option>
+            </select>
+          </div>
+
+          <!-- Sort Dropdown -->
+          <div class="select-filter-box">
+            <select id="feed-sort-select">
+              <option value="newest">Newest First</option>
+              <option value="most_liked">Most Helpful (👍)</option>
+              <option value="highest_rating">Highest Rating (5★ → 1★)</option>
+              <option value="lowest_rating">Lowest Rating (1★ → 5★)</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+
+          <!-- View Mode Toggle (Grid vs Table) -->
+          <div class="view-mode-toggle" title="Toggle Grid / List View">
+            <button class="view-btn active" id="view-grid-btn" title="3D Grid View">
+              <i class="fa-solid fa-table-cells-large"></i>
+            </button>
+            <button class="view-btn" id="view-list-btn" title="Compact Table View">
+              <i class="fa-solid fa-list"></i>
+            </button>
+          </div>
+
+          <!-- Export Actions Dropdown -->
+          <div class="export-dropdown-wrap">
+            <button class="btn btn-secondary" id="export-actions-btn" title="Export Dataset">
+              <i class="fa-solid fa-file-arrow-down"></i> Export
+            </button>
+            <div class="export-menu glass-panel" id="export-menu">
+              <button class="export-opt" id="export-csv-opt"><i class="fa-solid fa-file-csv text-purple"></i> Export as CSV</button>
+              <button class="export-opt" id="export-json-opt"><i class="fa-solid fa-file-code text-purple"></i> Export as JSON</button>
+              <button class="export-opt" id="export-print-opt"><i class="fa-solid fa-print text-purple"></i> Printable Summary</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedbacks Cards Grid / List Container -->
+      <div class="feedbacks-grid" id="feedbacks-grid">
+        <div class="loading-state">
+          <i class="fa-solid fa-circle-notch fa-spin"></i> Fetching live student reviews...
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive REST API Explorer Section -->
+    <section class="api-section" id="api-docs">
+      <div class="section-header center">
+        <span class="section-tag">DEVELOPER ECOSYSTEM</span>
+        <h2 class="section-title">Interactive REST API Explorer</h2>
+        <p class="section-desc">Test real-time endpoints or integrate Voxora into external LMS / dashboards.</p>
+      </div>
+
+      <div class="api-explorer-card glass-panel tilt-card">
+        <div class="api-tabs">
+          <button class="api-tab active" data-endpoint="getAll">GET /api/feedback</button>
+          <button class="api-tab" data-endpoint="getStats">GET /api/feedback/stats/summary</button>
+          <button class="api-tab" data-endpoint="create">POST /api/feedback</button>
+          <button class="api-tab" data-endpoint="getSingle">GET /api/feedback/:id</button>
+          <button class="api-tab" data-endpoint="like">POST /api/feedback/:id/like</button>
+          <button class="api-tab" data-endpoint="reply">POST /api/feedback/:id/reply</button>
+          <button class="api-tab" data-endpoint="exportCsv">GET /api/feedback/export/csv</button>
+          <button class="api-tab" data-endpoint="health">GET /api/health</button>
+        </div>
+
+        <div class="api-content-box">
+          <div class="endpoint-header">
+            <span class="http-method-badge" id="api-method-badge">GET</span>
+            <span class="endpoint-url" id="api-url-display">/api/feedback</span>
+            <div class="api-actions-wrap">
+              <button class="btn btn-copy-curl" id="copy-curl-btn" title="Copy cURL Command">
+                <i class="fa-regular fa-copy"></i> Copy cURL
+              </button>
+              <button class="btn btn-execute-api" id="execute-api-btn">
+                <i class="fa-solid fa-play"></i> Send Request
+              </button>
+            </div>
+          </div>
+
+          <!-- Interactive Request Body Input (for POST / PUT) -->
+          <div class="api-request-params-box" id="api-params-box" style="display: none;">
+            <div class="params-header">
+              <span>Request JSON Payload:</span>
+            </div>
+            <textarea id="api-request-body" rows="4" spellcheck="false"></textarea>
+          </div>
+
+          <div class="api-console">
+            <div class="console-header">
+              <span>Status: <strong id="api-status-code">200 OK</strong></span>
+              <span id="api-latency"><i class="fa-solid fa-bolt"></i> Live Stream</span>
+            </div>
+            <pre class="json-code-viewer"><code id="api-response-viewer">// Click "Send Request" to test this endpoint live...</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Admin PIN Verification Modal -->
+  <div class="modal-overlay" id="admin-pin-modal" style="display: none;">
+    <div class="modal-card glass-panel modal-card-sm">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-lock text-purple"></i> Admin Authentication</h3>
+        <button class="modal-close-btn" id="close-pin-modal">&times;</button>
+      </div>
+      <p class="modal-desc">Enter Instructor / Faculty PIN to unlock edit, reply and deletion privileges (Default PIN: <code>1234</code>):</p>
+      <div class="form-group">
+        <div class="input-glow-wrap">
+          <input type="password" id="admin-pin-input" placeholder="Enter PIN (e.g. 1234)" maxlength="8" autofocus>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-pin-btn">Cancel</button>
+        <button type="button" class="btn btn-primary btn-glow" id="submit-pin-btn">
+          <i class="fa-solid fa-key"></i> Unlock Admin
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Feedback Modal -->
+  <div class="modal-overlay" id="edit-modal" style="display: none;">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-pen-to-square text-purple"></i> Edit Student Feedback</h3>
+        <button class="modal-close-btn" id="close-edit-modal">&times;</button>
+      </div>
+      <form id="edit-feedback-form">
+        <input type="hidden" id="edit-feedback-id">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-student-name">Student Name</label>
+            <input type="text" id="edit-student-name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-course-code">Course Code</label>
+            <input type="text" id="edit-course-code" required style="text-transform: uppercase;">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-category">Category</label>
+            <select id="edit-category">
+              <option value="Lecture Quality">Lecture Quality</option>
+              <option value="Lab Experience">Lab Experience</option>
+              <option value="Course Material">Course Material</option>
+              <option value="Grading & Exams">Grading & Exams</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Rating (1 to 5)</label>
+            <div class="stars-3d-box modal-stars" id="edit-stars-box">
+              <button type="button" class="modal-star-btn" data-rating="1">★</button>
+              <button type="button" class="modal-star-btn" data-rating="2">★</button>
+              <button type="button" class="modal-star-btn" data-rating="3">★</button>
+              <button type="button" class="modal-star-btn" data-rating="4">★</button>
+              <button type="button" class="modal-star-btn" data-rating="5">★</button>
+            </div>
+            <input type="hidden" id="edit-rating-value" value="5">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-comments">Comments</label>
+          <textarea id="edit-comments" rows="3"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancel-edit-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-glow" id="save-edit-btn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Faculty Reply Modal -->
+  <div class="modal-overlay" id="reply-modal" style="display: none;">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-reply text-purple"></i> Faculty Response</h3>
+        <button class="modal-close-btn" id="close-reply-modal">&times;</button>
+      </div>
+      <p class="modal-desc" id="reply-modal-target-student">Responding to student feedback:</p>
+      <form id="reply-feedback-form">
+        <input type="hidden" id="reply-feedback-id">
+        <div class="form-group">
+          <label for="reply-text-input">Instructor / Faculty Official Response</label>
+          <textarea id="reply-text-input" rows="4" placeholder="Write your response, clarification, or thank you note to the student..." required></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancel-reply-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-glow" id="save-reply-btn">Publish Reply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="delete-modal" style="display: none;">
+    <div class="modal-card glass-panel modal-card-sm">
+      <div class="modal-header">
+        <h3 class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Delete Feedback</h3>
+        <button class="modal-close-btn" id="close-delete-modal">&times;</button>
+      </div>
+      <p class="modal-desc">Are you sure you want to permanently delete this student feedback record? This action cannot be undone.</p>
+      <input type="hidden" id="delete-feedback-id">
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-delete-btn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirm-delete-btn">
+          <i class="fa-solid fa-trash"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer-wrapper">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="brand-name">VOXORA QUANTUM</span>
+        <p>AI-Powered Student Feedback & Analytics Intelligence.</p>
+      </div>
+      <div class="footer-links">
+        <span>Themes: Obsidian Purple • Cyber Cyan • Emerald Matrix • Hyper Solaris • Glacial Void</span>
+        <span>•</span>
+        <span>100% Vercel Serverless Ready</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript App -->
+  <script src="js/app.js"></script>
+</body>
+</html>

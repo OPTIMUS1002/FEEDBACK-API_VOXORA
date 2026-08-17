@@ -1,17 +1,16 @@
 /**
- * VOXORA — STUDENT VOICE & AI INTELLIGENCE PLATFORM
- * Premium Editorial Monochromatic Experience Engine
- * Features: Fluid Contour Canvas, 4 Editorial Themes, Tactile Audio, 
- * Live AI Sentiment Analysis, Upvotes, Faculty Moderation, REST Studio
+ * VOXORA QUANTUM v3.0 — Next-Gen Student Feedback & Intelligence Platform
+ * Features: Holographic Logo, 5 Themes, Real-time AI Sentiment, Sound FX,
+ * Upvotes, Faculty Replies, CSV/JSON Export, Grid/Table Modes, REST Explorer
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  initCustomCursor();
-  initFluidContourCanvas();
-  initMagneticPhysics();
+  initCursorFollower();
+  initAmbientCanvas();
+  init3DTilt();
+  initHologramLogo();
   initThemeSystem();
-  initTactileSound();
-  initNavIndicators();
+  initSoundSystem();
   initAdminMode();
   initRatingSystem();
   initTagSelector();
@@ -19,10 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initFiltersAndSearch();
   initViewModes();
   initModals();
-  initExportSuite();
-  initApiStudio();
+  initExportFeatures();
+  initApiExplorer();
 
-  // Initial Data Sync
+  // Initial Data Fetch
   fetchDashboardStats();
   fetchFeedbacks();
 
@@ -31,81 +30,116 @@ document.addEventListener('DOMContentLoaded', () => {
     playSound('action');
     fetchDashboardStats();
     fetchFeedbacks();
-    showToast('Data synchronized with live database', 'info');
+    showToast('Data synchronized with live database!', 'info');
   });
 });
 
 /* ==========================================================================
-   1. SUBTLE CUSTOM CURSOR & MAGNETIC PHYSICS
+   1. CURSOR FOLLOWER & 3D TILT PHYSICS
    ========================================================================== */
-function initCustomCursor() {
-  const cursor = document.getElementById('custom-cursor');
-  if (!cursor || window.matchMedia('(pointer: coarse)').matches) return;
-
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
-  let cursorX = mouseX;
-  let cursorY = mouseY;
+function initCursorFollower() {
+  const cursorGlow = document.getElementById('cursor-glow');
+  if (!cursorGlow) return;
 
   window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
-
-  function renderCursor() {
-    cursorX += (mouseX - cursorX) * 0.25;
-    cursorY += (mouseY - cursorY) * 0.25;
-    cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
-    requestAnimationFrame(renderCursor);
-  }
-  renderCursor();
-
-  const interactiveElements = document.querySelectorAll(
-    'a, button, input, select, textarea, .form-pill, .course-item, .star-btn, .theme-option, .export-item'
-  );
-
-  interactiveElements.forEach((el) => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+    cursorGlow.style.left = `${e.clientX}px`;
+    cursorGlow.style.top = `${e.clientY}px`;
   });
 }
 
-function initMagneticPhysics() {
-  const magneticButtons = document.querySelectorAll('.magnetic-btn');
+function init3DTilt() {
+  const cards = document.querySelectorAll('.tilt-card, [data-tilt]');
 
-  magneticButtons.forEach((btn) => {
-    btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      btn.style.transform = `translate(${x * 0.18}px, ${y * 0.18}px)`;
+  cards.forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = ((y - centerY) / centerY) * -5;
+      const rotateY = ((x - centerX) / centerX) * 5;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
     });
 
-    btn.addEventListener('mouseleave', () => {
-      btn.style.transform = 'translate(0px, 0px)';
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
     });
   });
+}
 
-  // Hero frame subtle parallax
-  const heroFrame = document.getElementById('hero-magnetic-frame');
-  if (heroFrame) {
-    heroFrame.addEventListener('mousemove', (e) => {
-      const rect = heroFrame.getBoundingClientRect();
-      const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-      const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-      heroFrame.style.transform = `perspective(1000px) rotateY(${x * 4}deg) rotateX(${-y * 4}deg)`;
+/* ==========================================================================
+   2. HOLOGRAPHIC LOGO INTERACTIVITY, SHOCKWAVES & SOUND
+   ========================================================================== */
+function initHologramLogo() {
+  const logoBtn = document.getElementById('brand-logo-btn');
+  const navShockwave = document.getElementById('nav-shockwave');
+  const heroSphere = document.getElementById('hero-hologram-sphere');
+
+  // Navbar Logo Interaction
+  if (logoBtn) {
+    logoBtn.addEventListener('mouseenter', () => {
+      playSound('hover');
     });
 
-    heroFrame.addEventListener('mouseleave', () => {
-      heroFrame.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+    logoBtn.addEventListener('click', (e) => {
+      playSound('quantum');
+      
+      // Trigger shockwave ring
+      if (navShockwave) {
+        navShockwave.classList.remove('trigger');
+        void navShockwave.offsetWidth; // Force reflow
+        navShockwave.classList.add('trigger');
+      }
+
+      showToast('⚡ Quantum Resonance Synchronized', 'success');
+    });
+  }
+
+  // Hero Centerpiece 3D Magnetic Tracking & Shockwave
+  if (heroSphere) {
+    heroSphere.addEventListener('mousemove', (e) => {
+      const rect = heroSphere.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+
+      heroSphere.style.transform = `perspective(800px) rotateY(${x * 0.35}deg) rotateX(${-y * 0.35}deg) scale(1.18)`;
+    });
+
+    heroSphere.addEventListener('mouseleave', () => {
+      heroSphere.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) scale(1)';
+    });
+
+    heroSphere.addEventListener('click', () => {
+      playSound('quantum');
+      
+      // Pulse spectrum bars
+      const bars = heroSphere.querySelectorAll('.spectrum-bar');
+      bars.forEach(b => {
+        b.style.transform = 'scaleY(2.2)';
+        b.style.filter = 'drop-shadow(0 0 15px #ffffff)';
+        setTimeout(() => {
+          b.style.transform = '';
+          b.style.filter = '';
+        }, 500);
+      });
+
+      showToast('🔮 Quantum Singularity Transmitting Live Audio Waves!', 'info');
     });
   }
 }
 
 /* ==========================================================================
-   2. PROCEDURAL MONOCHROME FLUID CONTOUR CANVAS
+   3. 3D AMBIENT PARTICLES CANVAS
    ========================================================================== */
-function initFluidContourCanvas() {
+let canvasColor = '#d946ef';
+
+function initAmbientCanvas() {
   const canvas = document.getElementById('ambient-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -118,75 +152,75 @@ function initFluidContourCanvas() {
     height = canvas.height = window.innerHeight;
   });
 
-  let step = 0;
+  const particles = [];
+  const particleCount = Math.min(width > 768 ? 65 : 30, 85);
 
-  function drawFluidContours() {
-    ctx.clearRect(0, 0, width, height);
-
-    const theme = document.documentElement.getAttribute('data-theme') || 'obsidian-dark';
-    const isLight = theme === 'editorial-light' || theme === 'soft-grey';
-    const baseAlpha = isLight ? 0.04 : 0.06;
-    const strokeColor = isLight ? '0, 0, 0' : '255, 255, 255';
-
-    step += 0.003;
-
-    // Render 4 layered smooth undulating wave ribbons
-    const layers = 4;
-    for (let l = 0; l < layers; l++) {
-      ctx.beginPath();
-      const yOffset = height * (0.35 + l * 0.18);
-
-      ctx.moveTo(0, yOffset);
-      for (let x = 0; x <= width; x += 25) {
-        const wave1 = Math.sin(x * 0.002 + step + l * 1.5) * 45;
-        const wave2 = Math.cos(x * 0.004 - step * 0.8 + l) * 25;
-        const wave3 = Math.sin((x + yOffset) * 0.0015 + step) * 20;
-        const y = yOffset + wave1 + wave2 + wave3;
-        ctx.lineTo(x, y);
-      }
-
-      ctx.lineTo(width, height);
-      ctx.lineTo(0, height);
-      ctx.closePath();
-
-      ctx.fillStyle = `rgba(${strokeColor}, ${baseAlpha * (l + 1) * 0.45})`;
-      ctx.fill();
-
-      // Delicate contour line
-      ctx.beginPath();
-      for (let x = 0; x <= width; x += 25) {
-        const wave1 = Math.sin(x * 0.002 + step + l * 1.5) * 45;
-        const wave2 = Math.cos(x * 0.004 - step * 0.8 + l) * 25;
-        const wave3 = Math.sin((x + yOffset) * 0.0015 + step) * 20;
-        const y = yOffset + wave1 + wave2 + wave3;
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = `rgba(${strokeColor}, ${(baseAlpha + 0.03) * (l + 1) * 0.6})`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
-
-    requestAnimationFrame(drawFluidContours);
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      radius: Math.random() * 2 + 0.6,
+      vx: (Math.random() - 0.5) * 0.45,
+      vy: (Math.random() - 0.5) * 0.45,
+      alpha: Math.random() * 0.55 + 0.2
+    });
   }
 
-  drawFluidContours();
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < 0) p.x = width;
+      if (p.x > width) p.x = 0;
+      if (p.y < 0) p.y = height;
+      if (p.y > height) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = canvasColor;
+      ctx.globalAlpha = p.alpha;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = canvasColor;
+      ctx.fill();
+
+      for (let j = i + 1; j < particles.length; j++) {
+        const p2 = particles[j];
+        const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+        if (dist < 115) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = canvasColor;
+          ctx.globalAlpha = (1 - dist / 115) * 0.18;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
 }
 
 /* ==========================================================================
-   3. 4 MONOCHROME EDITORIAL THEMES
+   4. 5 THEMES SYSTEM
    ========================================================================== */
 function initThemeSystem() {
   const themeBtn = document.getElementById('theme-btn');
   const themeMenu = document.getElementById('theme-menu');
-  const themeOptions = document.querySelectorAll('.theme-option');
+  const themeOpts = document.querySelectorAll('.theme-opt');
 
-  // Load saved theme
-  const savedTheme = localStorage.getItem('voxora_theme') || 'obsidian-dark';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  themeOptions.forEach((opt) => {
-    opt.classList.toggle('active', opt.dataset.setTheme === savedTheme);
-  });
+  const themeColors = {
+    purple: '#d946ef',
+    cyan: '#38bdf8',
+    emerald: '#34d399',
+    solaris: '#fbbf24',
+    glacial: '#38bdf8'
+  };
 
   themeBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -198,29 +232,28 @@ function initThemeSystem() {
     themeMenu?.classList.remove('show');
   });
 
-  themeOptions.forEach((opt) => {
+  themeOpts.forEach((opt) => {
     opt.addEventListener('click', () => {
       const theme = opt.dataset.setTheme;
       document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('voxora_theme', theme);
-
-      themeOptions.forEach((o) => o.classList.remove('active'));
+      themeOpts.forEach((o) => o.classList.remove('active'));
       opt.classList.add('active');
 
+      canvasColor = themeColors[theme] || '#d946ef';
       playSound('action');
-      showToast(`Visual theme set to ${opt.querySelector('.theme-name')?.textContent}`, 'info');
+      showToast(`Theme switched: ${opt.innerText}`, 'info');
       themeMenu?.classList.remove('show');
     });
   });
 }
 
 /* ==========================================================================
-   4. TACTILE AUDIO FX (Web Audio API)
+   5. SCI-FI SOUND FX ENGINE (Web Audio API)
    ========================================================================== */
 let audioCtx = null;
 let soundEnabled = true;
 
-function initTactileSound() {
+function initSoundSystem() {
   const toggleBtn = document.getElementById('sound-toggle-btn');
   if (!toggleBtn) return;
 
@@ -230,12 +263,12 @@ function initTactileSound() {
     toggleBtn.innerHTML = soundEnabled
       ? '<i class="fa-solid fa-volume-high"></i>'
       : '<i class="fa-solid fa-volume-xmark"></i>';
-
+    
     if (soundEnabled) {
       playSound('success');
-      showToast('Tactile audio feedback enabled', 'info');
+      showToast('Audio FX Enabled', 'info');
     } else {
-      showToast('Audio feedback muted', 'info');
+      showToast('Audio FX Muted', 'info');
     }
   });
 }
@@ -259,109 +292,60 @@ function playSound(type) {
 
     if (type === 'click') {
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(540, now);
-      osc.frequency.exponentialRampToValueAtTime(280, now + 0.04);
-      gain.gain.setValueAtTime(0.08, now);
-      gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(300, now + 0.05);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+      osc.start(now);
+      osc.stop(now + 0.05);
+    } else if (type === 'hover') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(450, now);
+      osc.frequency.linearRampToValueAtTime(550, now + 0.04);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.linearRampToValueAtTime(0.005, now + 0.04);
       osc.start(now);
       osc.stop(now + 0.04);
-    } else if (type === 'action') {
+    } else if (type === 'like') {
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(320, now);
-      osc.frequency.linearRampToValueAtTime(480, now + 0.09);
-      gain.gain.setValueAtTime(0.09, now);
-      gain.gain.linearRampToValueAtTime(0.001, now + 0.09);
+      osc.frequency.setValueAtTime(520, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
       osc.start(now);
-      osc.stop(now + 0.09);
+      osc.stop(now + 0.12);
     } else if (type === 'success') {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(440, now);
-      osc.frequency.exponentialRampToValueAtTime(660, now + 0.15);
-      gain.gain.setValueAtTime(0.1, now);
-      gain.gain.linearRampToValueAtTime(0.001, now + 0.15);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.2);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
+    } else if (type === 'action' || type === 'quantum') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(300, now);
+      osc.frequency.linearRampToValueAtTime(650, now + 0.15);
+      gain.gain.setValueAtTime(0.14, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
       osc.start(now);
       osc.stop(now + 0.15);
-    } else if (type === 'like') {
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(480, now);
-      osc.frequency.exponentialRampToValueAtTime(720, now + 0.08);
-      gain.gain.setValueAtTime(0.1, now);
-      gain.gain.linearRampToValueAtTime(0.001, now + 0.08);
-      osc.start(now);
-      osc.stop(now + 0.08);
     } else if (type === 'error') {
       osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(240, now);
-      osc.frequency.linearRampToValueAtTime(160, now + 0.12);
-      gain.gain.setValueAtTime(0.1, now);
-      gain.gain.linearRampToValueAtTime(0.001, now + 0.12);
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.linearRampToValueAtTime(140, now + 0.2);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
       osc.start(now);
-      osc.stop(now + 0.12);
+      osc.stop(now + 0.2);
     }
   } catch (err) {
-    // Audio Context gracefully handled
+    // AudioContext silently ignored on strict browser autoplay
   }
 }
 
 /* ==========================================================================
-   5. FLOATING NAVIGATION SLIDING PILL INDICATOR
-   ========================================================================== */
-function initNavIndicators() {
-  const navWrap = document.getElementById('nav-links-wrap');
-  const pill = document.getElementById('nav-active-pill');
-  const links = document.querySelectorAll('#nav-links-wrap .nav-link');
-  if (!navWrap || !pill || links.length === 0) return;
-
-  function updatePillPosition(activeLink) {
-    if (!activeLink) return;
-    const wrapRect = navWrap.getBoundingClientRect();
-    const linkRect = activeLink.getBoundingClientRect();
-    const left = linkRect.left - wrapRect.left;
-    pill.style.left = `${left}px`;
-    pill.style.width = `${linkRect.width}px`;
-  }
-
-  const initialActive = document.querySelector('#nav-links-wrap .nav-link.active') || links[0];
-  updatePillPosition(initialActive);
-
-  links.forEach((link) => {
-    link.addEventListener('mouseenter', () => updatePillPosition(link));
-    link.addEventListener('click', () => {
-      links.forEach((l) => l.classList.remove('active'));
-      link.classList.add('active');
-      updatePillPosition(link);
-      playSound('click');
-    });
-  });
-
-  navWrap.addEventListener('mouseleave', () => {
-    const currentActive = document.querySelector('#nav-links-wrap .nav-link.active') || links[0];
-    updatePillPosition(currentActive);
-  });
-
-  // ScrollSpy Active Link Update
-  const sections = document.querySelectorAll('section[id]');
-  window.addEventListener('scroll', () => {
-    const scrollY = window.pageYOffset + 200;
-    sections.forEach((sec) => {
-      const top = sec.offsetTop;
-      const height = sec.offsetHeight;
-      const id = sec.getAttribute('id');
-      if (scrollY >= top && scrollY < top + height) {
-        links.forEach((l) => {
-          if (l.getAttribute('href') === `#${id}`) {
-            links.forEach((linkItem) => linkItem.classList.remove('active'));
-            l.classList.add('active');
-            updatePillPosition(l);
-          }
-        });
-      }
-    });
-  });
-}
-
-/* ==========================================================================
-   6. FACULTY / ADMIN MODERATION MODE
+   6. ADMIN MODE & PRIVILEGES
    ========================================================================== */
 let isAdminMode = false;
 const DEFAULT_PIN = '1234';
@@ -369,9 +353,9 @@ const DEFAULT_PIN = '1234';
 function initAdminMode() {
   const adminBtn = document.getElementById('admin-mode-btn');
   const adminModal = document.getElementById('admin-pin-modal');
-  const closePin = document.getElementById('close-pin-modal');
-  const cancelPin = document.getElementById('cancel-pin-btn');
-  const submitPin = document.getElementById('submit-pin-btn');
+  const closePinModal = document.getElementById('close-pin-modal');
+  const cancelPinBtn = document.getElementById('cancel-pin-btn');
+  const submitPinBtn = document.getElementById('submit-pin-btn');
   const pinInput = document.getElementById('admin-pin-input');
 
   adminBtn?.addEventListener('click', () => {
@@ -380,7 +364,7 @@ function initAdminMode() {
       document.body.classList.remove('admin-mode-active');
       adminBtn.classList.remove('active');
       playSound('action');
-      showToast('Faculty moderation mode deactivated', 'info');
+      showToast('Admin mode deactivated', 'info');
       renderFeedbacksList(currentFeedbacks);
     } else {
       playSound('click');
@@ -394,41 +378,41 @@ function initAdminMode() {
     if (pinInput) pinInput.value = '';
   };
 
-  closePin?.addEventListener('click', closeModal);
-  cancelPin?.addEventListener('click', closeModal);
+  closePinModal?.addEventListener('click', closeModal);
+  cancelPinBtn?.addEventListener('click', closeModal);
 
-  submitPin?.addEventListener('click', () => {
-    const val = pinInput?.value.trim();
-    if (val === DEFAULT_PIN) {
+  submitPinBtn?.addEventListener('click', () => {
+    const enteredPin = pinInput?.value.trim();
+    if (enteredPin === DEFAULT_PIN) {
       isAdminMode = true;
       document.body.classList.add('admin-mode-active');
       adminBtn?.classList.add('active');
       closeModal();
       playSound('success');
-      showToast('Faculty privileges authenticated (PIN verified)', 'success');
+      showToast('Instructor Privileges Activated!', 'success');
       renderFeedbacksList(currentFeedbacks);
     } else {
       playSound('error');
-      showToast('Invalid authentication PIN. Use 1234', 'error');
+      showToast('Incorrect PIN. Try 1234', 'error');
     }
   });
 }
 
 /* ==========================================================================
-   7. TACTILE 5-STAR RATING & TOPIC TAG SELECTOR
+   7. 3D STAR RATING & TOPIC TAG SELECTOR
    ========================================================================== */
-const ratingDescriptors = {
-  1: { icon: '●', text: '1 / 5 — Inadequate Course Experience' },
-  2: { icon: '●', text: '2 / 5 — Needs Structural Improvement' },
-  3: { icon: '●', text: '3 / 5 — Meets Baseline Standards' },
-  4: { icon: '●', text: '4 / 5 — Very Good & Effective Delivery' },
-  5: { icon: '●', text: '5 / 5 — Exemplary Course Experience' }
+const ratingDescriptions = {
+  1: { icon: '⚠️', text: '1 / 5 — Needs Substantial Improvement' },
+  2: { icon: '🛠️', text: '2 / 5 — Below Expectations' },
+  3: { icon: '⚖️', text: '3 / 5 — Average Experience' },
+  4: { icon: '🌟', text: '4 / 5 — Very Good Experience' },
+  5: { icon: '✨', text: '5 / 5 — Outstanding Experience' }
 };
 
 function initRatingSystem() {
   const starBtns = document.querySelectorAll('#star-rating-box .star-btn');
   const ratingInput = document.getElementById('rating-value');
-  const badge = document.getElementById('rating-sentiment-badge');
+  const sentimentBadge = document.getElementById('rating-sentiment-badge');
 
   function updateStars(rating) {
     starBtns.forEach((btn) => {
@@ -438,20 +422,21 @@ function initRatingSystem() {
 
     if (ratingInput) ratingInput.value = rating;
 
-    if (badge && ratingDescriptors[rating]) {
-      badge.innerHTML = `
-        <span class="badge-icon">${ratingDescriptors[rating].icon}</span>
-        <span class="badge-text">${ratingDescriptors[rating].text}</span>
+    if (sentimentBadge && ratingDescriptions[rating]) {
+      sentimentBadge.innerHTML = `
+        <span class="badge-icon">${ratingDescriptions[rating].icon}</span>
+        <span class="badge-text">${ratingDescriptions[rating].text}</span>
       `;
     }
   }
 
   starBtns.forEach((btn) => {
     btn.addEventListener('mouseenter', () => {
-      playSound('click');
-      const hoverVal = parseInt(btn.dataset.rating, 10);
+      playSound('hover');
+      const hoverRating = parseInt(btn.dataset.rating, 10);
       starBtns.forEach((b) => {
-        b.classList.toggle('hovered', parseInt(b.dataset.rating, 10) <= hoverVal);
+        const r = parseInt(b.dataset.rating, 10);
+        b.classList.toggle('hovered', r <= hoverRating);
       });
     });
 
@@ -460,9 +445,9 @@ function initRatingSystem() {
     });
 
     btn.addEventListener('click', () => {
-      playSound('action');
-      const selected = parseInt(btn.dataset.rating, 10);
-      updateStars(selected);
+      playSound('click');
+      const selectedRating = parseInt(btn.dataset.rating, 10);
+      updateStars(selectedRating);
     });
   });
 
@@ -474,12 +459,12 @@ function initTagSelector() {
   const tagsHidden = document.getElementById('selected-tags-hidden');
   let selectedTags = [];
 
-  pills.forEach((pill) => {
+  pills.forEach(pill => {
     pill.addEventListener('click', () => {
       playSound('click');
       const tag = pill.dataset.tag;
       if (selectedTags.includes(tag)) {
-        selectedTags = selectedTags.filter((t) => t !== tag);
+        selectedTags = selectedTags.filter(t => t !== tag);
         pill.classList.remove('active');
       } else {
         selectedTags.push(tag);
@@ -491,25 +476,25 @@ function initTagSelector() {
 }
 
 /* ==========================================================================
-   8. REAL-TIME AI SENTIMENT ENGINE & FORM SUBMISSION
+   8. REAL-TIME AI SENTIMENT PARSER & FORM SUBMISSION
    ========================================================================== */
-function evaluateSentiment(text) {
-  const positiveKeywords = ['great', 'amazing', 'outstanding', 'love', 'loved', 'awesome', 'excellent', 'helpful', 'engaging', 'clear', 'best', 'enjoyed', 'stellar', 'exemplary', 'superb'];
-  const constructiveKeywords = ['hard', 'tough', 'difficult', 'fast', 'slow', 'more', 'improve', 'complex', 'pace', 'heavy', 'assignments', 'deploy', 'rigorous'];
+function analyzeSentiment(text) {
+  const positiveWords = ['great', 'amazing', 'outstanding', 'love', 'loved', 'awesome', 'excellent', 'helpful', 'engaging', 'clear', 'best', 'super', 'interactive', 'enjoyed', 'gem'];
+  const constructiveWords = ['hard', 'tough', 'difficult', 'fast', 'slow', 'more', 'improve', 'complex', 'pace', 'heavy', 'assignments', 'deploy', 'practical'];
 
   const lower = text.toLowerCase();
-  let pos = 0;
-  let con = 0;
+  let posCount = 0;
+  let conCount = 0;
 
-  positiveKeywords.forEach((w) => { if (lower.includes(w)) pos++; });
-  constructiveKeywords.forEach((w) => { if (lower.includes(w)) con++; });
+  positiveWords.forEach(w => { if (lower.includes(w)) posCount++; });
+  constructiveWords.forEach(w => { if (lower.includes(w)) conCount++; });
 
-  if (pos > con) {
-    return { label: 'AI Evaluation: Positive & Constructive', confidence: '96% confidence' };
-  } else if (con > pos) {
-    return { label: 'AI Evaluation: Constructive Critique', confidence: '91% confidence' };
+  if (posCount > conCount) {
+    return { type: 'positive', label: 'Positive & High Energy', confidence: '96%' };
+  } else if (conCount > posCount) {
+    return { type: 'constructive', label: 'Constructive Feedback', confidence: '89%' };
   } else {
-    return { label: 'AI Evaluation: Balanced Perspective', confidence: '87% confidence' };
+    return { type: 'neutral', label: 'Balanced Perspective', confidence: '85%' };
   }
 }
 
@@ -518,17 +503,18 @@ function initFormAndSentiment() {
   const commentsInput = document.getElementById('feedback-comments-input');
   const charCounter = document.getElementById('char-counter');
   const aiBox = document.getElementById('ai-sentiment-box');
+  const aiTag = document.getElementById('ai-sentiment-tag');
   const aiText = document.getElementById('ai-sentiment-text');
   const aiConfidence = document.getElementById('ai-confidence');
   const submitBtn = document.getElementById('submit-btn');
 
-  // Quick Course Chip Clickers
-  document.querySelectorAll('.quick-tag').forEach((chip) => {
-    chip.addEventListener('click', () => {
+  // Course Quick Tags
+  document.querySelectorAll('.quick-tag').forEach((btn) => {
+    btn.addEventListener('click', () => {
       playSound('click');
       const input = document.getElementById('course-code-input');
       if (input) {
-        input.value = chip.dataset.code;
+        input.value = btn.dataset.code;
         input.focus();
       }
     });
@@ -540,10 +526,10 @@ function initFormAndSentiment() {
     if (charCounter) charCounter.textContent = `${val.length} / 500`;
 
     if (val.trim().length >= 8) {
-      const res = evaluateSentiment(val);
+      const sentiment = analyzeSentiment(val);
       if (aiBox) aiBox.style.display = 'flex';
-      if (aiText) aiText.textContent = res.label;
-      if (aiConfidence) aiConfidence.textContent = res.confidence;
+      if (aiText) aiText.textContent = `AI Sentiment: ${sentiment.label}`;
+      if (aiConfidence) aiConfidence.textContent = `${sentiment.confidence} confidence`;
     } else {
       if (aiBox) aiBox.style.display = 'none';
     }
@@ -566,7 +552,7 @@ function initFormAndSentiment() {
 
     if (!studentName || !courseCode) {
       playSound('error');
-      showToast('Please specify student name and course identifier', 'error');
+      showToast('Please fill out all required fields.', 'error');
       return;
     }
 
@@ -598,27 +584,28 @@ function initFormAndSentiment() {
 
       if (res.ok && json.success) {
         playSound('success');
-        showToast('Feedback successfully transmitted to intelligence matrix', 'success');
+        showToast('Feedback transmitted successfully to Voxora Matrix!', 'success');
         form.reset();
-        document.querySelectorAll('#form-tag-pills .form-pill').forEach((p) => p.classList.remove('active'));
+        document.querySelectorAll('#form-tag-pills .form-pill').forEach(p => p.classList.remove('active'));
         if (document.getElementById('selected-tags-hidden')) {
           document.getElementById('selected-tags-hidden').value = '[]';
         }
         if (aiBox) aiBox.style.display = 'none';
         if (charCounter) charCounter.textContent = '0 / 500';
 
-        // Refresh telemetry & stream
+        // Refresh stats and live feed
         fetchDashboardStats();
         fetchFeedbacks();
 
+        // Scroll to feedbacks wall
         document.getElementById('feedbacks-wall')?.scrollIntoView({ behavior: 'smooth' });
       } else {
         playSound('error');
-        showToast(json.error || 'Submission failed', 'error');
+        showToast(json.error || 'Failed to submit feedback', 'error');
       }
     } catch (err) {
       playSound('error');
-      showToast('Unable to connect to intelligence API', 'error');
+      showToast('Network Error: Unable to reach API.', 'error');
     } finally {
       if (btnText) btnText.style.display = 'inline-flex';
       if (btnLoader) btnLoader.style.display = 'none';
@@ -628,10 +615,10 @@ function initFormAndSentiment() {
 }
 
 /* ==========================================================================
-   9. COMMUNITY FEED, FILTERS, UPVOTES & VIEW MODES
+   9. FEEDBACKS WALL, FILTERS, VIEW MODES & UPVOTES
    ========================================================================== */
 let currentFeedbacks = [];
-let currentViewMode = 'grid'; // 'grid' | 'table'
+let currentViewMode = 'grid'; // 'grid' or 'table'
 
 function initViewModes() {
   const gridBtn = document.getElementById('view-grid-btn');
@@ -676,10 +663,10 @@ async function fetchFeedbacks() {
       renderFeedbacksList(currentFeedbacks);
       populateCourseFilters(currentFeedbacks);
     } else {
-      if (grid) grid.innerHTML = `<div class="editorial-loading">No student feedback records located.</div>`;
+      if (grid) grid.innerHTML = `<div class="loading-state">No feedback records found.</div>`;
     }
   } catch (err) {
-    if (grid) grid.innerHTML = `<div class="editorial-loading">Error connecting to database.</div>`;
+    if (grid) grid.innerHTML = `<div class="loading-state text-danger">Error loading feedbacks from database.</div>`;
   }
 }
 
@@ -688,23 +675,23 @@ function renderFeedbacksList(feedbacks) {
   if (!container) return;
 
   if (!feedbacks || feedbacks.length === 0) {
-    container.innerHTML = `<div class="editorial-loading">No student records match the active criteria.</div>`;
+    container.innerHTML = `<div class="loading-state">No student reviews match the current filters.</div>`;
     return;
   }
 
   if (currentViewMode === 'table') {
     let rowsHtml = '';
-    feedbacks.forEach((f) => {
+    feedbacks.forEach(f => {
       const stars = '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating);
       rowsHtml += `
         <tr>
           <td><strong>${escapeHtml(f.studentName || 'Student')}</strong></td>
           <td><span class="course-code-badge">${escapeHtml(f.courseCode)}</span></td>
-          <td>${stars}</td>
-          <td><span class="card-category-tag">${escapeHtml(f.category || 'General')}</span></td>
-          <td>${escapeHtml(f.comments || 'No written critique left.')}</td>
+          <td style="color:#fbbf24;">${stars}</td>
+          <td><span class="card-category-badge">${escapeHtml(f.category || 'General')}</span></td>
+          <td>${escapeHtml(f.comments || 'No comments left.')}</td>
           <td>
-            <button class="like-reaction-btn" onclick="likeFeedbackCard(${f.id}, this)">
+            <button class="like-btn" onclick="likeFeedbackCard(${f.id}, this)">
               <i class="fa-regular fa-thumbs-up"></i> ${f.likesCount || 0}
             </button>
           </td>
@@ -720,9 +707,9 @@ function renderFeedbacksList(feedbacks) {
               <th>Student</th>
               <th>Course</th>
               <th>Rating</th>
-              <th>Domain</th>
-              <th>Critique</th>
-              <th>Helpful</th>
+              <th>Category</th>
+              <th>Feedback</th>
+              <th>Reactions</th>
             </tr>
           </thead>
           <tbody>${rowsHtml}</tbody>
@@ -732,85 +719,89 @@ function renderFeedbacksList(feedbacks) {
     return;
   }
 
-  // Editorial Grid Mode
-  container.innerHTML = feedbacks.map((f) => {
+  // Grid Mode (3D Tilt Cards)
+  container.innerHTML = feedbacks.map(f => {
     const initials = (f.studentName || 'S').slice(0, 2).toUpperCase();
     const stars = '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating);
-    const dateStr = f.createdAt ? new Date(f.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
-    const tagsHtml = (Array.isArray(f.tags) ? f.tags : []).map((t) => `<span class="card-tag-pill">${escapeHtml(t)}</span>`).join('');
+    const dateFormatted = f.createdAt ? new Date(f.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
 
-    const replyHtml = f.instructorReply ? `
-      <div class="faculty-reply-container">
-        <div class="faculty-reply-head">
-          <i class="fa-solid fa-circle-check"></i> Faculty Resolution
+    const tagsHtml = (Array.isArray(f.tags) ? f.tags : []).map(t => `<span class="card-tag">${escapeHtml(t)}</span>`).join('');
+
+    const instructorReplyHtml = f.instructorReply ? `
+      <div class="instructor-reply-box">
+        <div class="instructor-reply-header">
+          <i class="fa-solid fa-circle-check"></i> Faculty Response:
         </div>
-        <div class="faculty-reply-body">"${escapeHtml(f.instructorReply)}"</div>
+        <div class="instructor-reply-text">"${escapeHtml(f.instructorReply)}"</div>
       </div>
     ` : '';
 
     return `
-      <div class="feedback-card" data-id="${f.id}">
+      <div class="feedback-card glass-panel tilt-card" data-tilt data-id="${f.id}">
         <div>
-          <div class="card-top-meta">
-            <div class="student-name-block">
-              <div class="student-initials-badge">${initials}</div>
+          <div class="feedback-card-header">
+            <div class="student-meta">
+              <div class="student-avatar">${initials}</div>
               <div>
                 <div class="student-name-text">${escapeHtml(f.studentName || 'Anonymous Student')}</div>
-                <div class="card-timestamp">${dateStr} &bull; ${escapeHtml(f.semester || 'Spring 2026')}</div>
+                <div class="feedback-time-text">${dateFormatted} &bull; ${escapeHtml(f.semester || 'Spring 2026')}</div>
               </div>
             </div>
-            <span class="course-code-badge">${escapeHtml(f.courseCode)}</span>
+            <span class="course-tag-pill">${escapeHtml(f.courseCode)}</span>
           </div>
 
-          <div class="card-rating-strip">
+          <div class="card-rating-row">
             <div class="card-stars">${stars}</div>
-            <span class="card-category-tag">${escapeHtml(f.category || 'General')}</span>
+            <span class="card-category-badge">${escapeHtml(f.category || 'General')}</span>
           </div>
 
-          <div class="card-review-quote">
-            "${escapeHtml(f.comments || 'Exemplary teaching delivery and constructive course material.')}"
+          <div class="card-comment">
+            "${escapeHtml(f.comments || 'Outstanding course experience and high quality content.')}"
           </div>
 
-          ${tagsHtml ? `<div class="card-tags-flex">${tagsHtml}</div>` : ''}
-          ${replyHtml}
+          ${tagsHtml ? `<div class="card-tags-row">${tagsHtml}</div>` : ''}
+          ${instructorReplyHtml}
         </div>
 
-        <div class="card-bottom-actions">
-          <button class="like-reaction-btn" onclick="likeFeedbackCard(${f.id}, this)" title="Mark as Helpful">
+        <div class="card-footer">
+          <button class="like-btn" onclick="likeFeedbackCard(${f.id}, this)" title="Mark as Helpful">
             <i class="fa-regular fa-thumbs-up"></i> Helpful (<span class="like-count">${f.likesCount || 0}</span>)
           </button>
 
-          <div class="admin-action-icons">
+          <div class="admin-card-actions">
             ${isAdminMode ? `
-              <button class="admin-icon-btn" onclick="openReplyModal(${f.id}, '${escapeHtml(f.studentName)}')" title="Respond as Faculty">
+              <button class="action-icon-btn" onclick="openReplyModal(${f.id}, '${escapeHtml(f.studentName)}')" title="Reply as Faculty">
                 <i class="fa-solid fa-reply"></i>
               </button>
-              <button class="admin-icon-btn" onclick="openEditModal(${f.id})" title="Modify Record">
+              <button class="action-icon-btn" onclick="openEditModal(${f.id})" title="Edit Feedback">
                 <i class="fa-solid fa-pen"></i>
               </button>
-              <button class="admin-icon-btn delete-icon" onclick="openDeleteModal(${f.id})" title="Delete Record">
+              <button class="action-icon-btn delete-btn" onclick="openDeleteModal(${f.id})" title="Delete Feedback">
                 <i class="fa-solid fa-trash"></i>
               </button>
             ` : ''}
           </div>
         </div>
+        <div class="card-shine"></div>
       </div>
     `;
   }).join('');
+
+  init3DTilt();
 }
 
 function populateCourseFilters(feedbacks) {
-  const filter = document.getElementById('feed-course-filter');
-  if (!filter) return;
+  const courseFilter = document.getElementById('feed-course-filter');
+  if (!courseFilter) return;
 
-  const current = filter.value;
-  const uniqueCourses = [...new Set(feedbacks.map((f) => f.courseCode))].filter(Boolean).sort();
+  const currentVal = courseFilter.value;
+  const uniqueCourses = [...new Set(feedbacks.map(f => f.courseCode))].filter(Boolean).sort();
 
-  let html = '<option value="ALL">All Courses</option>';
-  uniqueCourses.forEach((c) => {
-    html += `<option value="${c}" ${c === current ? 'selected' : ''}>${c}</option>`;
+  let optionsHtml = '<option value="ALL">All Courses</option>';
+  uniqueCourses.forEach(c => {
+    optionsHtml += `<option value="${c}" ${c === currentVal ? 'selected' : ''}>${c}</option>`;
   });
-  filter.innerHTML = html;
+  courseFilter.innerHTML = optionsHtml;
 }
 
 function initFiltersAndSearch() {
@@ -852,7 +843,7 @@ function initFiltersAndSearch() {
   });
 }
 
-// Global Helpful Reaction Handler
+// Global Helpful / Upvote Handler
 window.likeFeedbackCard = async function (id, btnElem) {
   playSound('like');
   try {
@@ -863,7 +854,7 @@ window.likeFeedbackCard = async function (id, btnElem) {
       const countSpan = btnElem.querySelector('.like-count');
       if (countSpan) countSpan.textContent = json.likesCount;
       showToast('Marked as helpful 👍', 'success');
-
+      // Update quick ribbon
       const ribbon = document.getElementById('ribbon-reactions');
       if (ribbon) ribbon.textContent = parseInt(ribbon.textContent || '0', 10) + 1;
     }
@@ -873,7 +864,7 @@ window.likeFeedbackCard = async function (id, btnElem) {
 };
 
 /* ==========================================================================
-   10. EDITORIAL TELEMETRY & DASHBOARD METRICS
+   10. ANALYTICS & DASHBOARD STATS MATRIX
    ========================================================================== */
 async function fetchDashboardStats() {
   try {
@@ -881,14 +872,14 @@ async function fetchDashboardStats() {
     const json = await res.json();
 
     if (json.success) {
-      renderEditorialStats(json);
+      renderStatsMatrix(json);
     }
   } catch (err) {
-    console.error('Telemetry fetch error:', err);
+    console.error('Error fetching analytics:', err);
   }
 }
 
-function renderEditorialStats(stats) {
+function renderStatsMatrix(stats) {
   const totalCountElem = document.getElementById('stat-total-count');
   const avgRatingElem = document.getElementById('stat-avg-rating');
   const starsRender = document.getElementById('stat-stars-render');
@@ -898,7 +889,7 @@ function renderEditorialStats(stats) {
   const ribbonReactions = document.getElementById('ribbon-reactions');
 
   // Total
-  if (totalCountElem) animateValue(totalCountElem, parseInt(totalCountElem.textContent, 10) || 0, stats.totalFeedback || 0, 800);
+  if (totalCountElem) totalCountElem.textContent = stats.totalFeedback;
   if (ribbonReactions) ribbonReactions.textContent = stats.totalReactions || 0;
 
   // Average Rating
@@ -915,12 +906,12 @@ function renderEditorialStats(stats) {
   const donutSegment = document.getElementById('donut-score-segment');
   if (donutScore) donutScore.textContent = avg.toFixed(1);
   if (donutSegment) {
-    const circumference = 289.02; // 2 * PI * 46
+    const circumference = 301.59;
     const progress = (avg / 5.0) * circumference;
     donutSegment.style.strokeDashoffset = circumference - progress;
   }
 
-  // Sentiment
+  // Sentiment Score
   if (sentimentScoreElem) {
     sentimentScoreElem.textContent = `${stats.sentimentScore || 94}%`;
   }
@@ -947,41 +938,19 @@ function renderEditorialStats(stats) {
     if (topCourseDesc) topCourseDesc.textContent = `${courses[0].averageRating} ★ (${courses[0].feedbackCount} reviews)`;
 
     if (leaderboardContainer) {
-      leaderboardContainer.innerHTML = courses.map((c) => `
+      leaderboardContainer.innerHTML = courses.map(c => `
         <div class="course-item" onclick="filterByCourseLeaderboard('${c.courseCode}')">
           <span class="course-code-badge">${c.courseCode}</span>
           <div class="course-stats-right">
             <span class="course-rating-val">${c.averageRating} ★</span>
-            <span class="course-count-val">${c.feedbackCount} submissions</span>
+            <span class="course-count-val">${c.feedbackCount} reviews</span>
           </div>
         </div>
       `).join('');
     }
   } else {
-    if (leaderboardContainer) leaderboardContainer.innerHTML = '<div class="editorial-loading">No courses registered.</div>';
+    if (leaderboardContainer) leaderboardContainer.innerHTML = '<div class="loading-state">No courses recorded yet.</div>';
   }
-}
-
-function animateValue(elem, start, end, duration) {
-  if (isNaN(start)) start = 0;
-  if (isNaN(end)) end = 0;
-  const range = end - start;
-  let current = start;
-  const increment = end > start ? 1 : -1;
-  const stepTime = Math.abs(Math.floor(duration / (range || 1)));
-
-  if (range === 0) {
-    elem.textContent = end;
-    return;
-  }
-
-  const timer = setInterval(() => {
-    current += increment;
-    elem.textContent = current;
-    if (current === end) {
-      clearInterval(timer);
-    }
-  }, Math.max(stepTime, 20));
 }
 
 window.filterByCourseLeaderboard = function (courseCode) {
@@ -991,7 +960,7 @@ window.filterByCourseLeaderboard = function (courseCode) {
     filter.value = courseCode;
     fetchFeedbacks();
     document.getElementById('feedbacks-wall')?.scrollIntoView({ behavior: 'smooth' });
-    showToast(`Filtered stream by course: ${courseCode}`, 'info');
+    showToast(`Filtered feed by course: ${courseCode}`, 'info');
   }
 };
 
@@ -1011,12 +980,12 @@ function initModals() {
 
   // Edit Star buttons
   const editStarBtns = document.querySelectorAll('#edit-stars-box .modal-star-btn');
-  editStarBtns.forEach((btn) => {
+  editStarBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const r = parseInt(btn.dataset.rating, 10);
       document.getElementById('edit-rating-value').value = r;
-      editStarBtns.forEach((b) => {
-        b.style.color = parseInt(b.dataset.rating, 10) <= r ? '#ffffff' : '#4b5563';
+      editStarBtns.forEach(b => {
+        b.style.color = parseInt(b.dataset.rating, 10) <= r ? '#fbbf24' : '#64748b';
       });
     });
   });
@@ -1039,15 +1008,15 @@ function initModals() {
       const json = await res.json();
       if (json.success) {
         playSound('success');
-        showToast('Feedback record updated successfully', 'success');
+        showToast('Feedback updated successfully!', 'success');
         closeEditModal();
         fetchFeedbacks();
         fetchDashboardStats();
       } else {
-        showToast(json.error || 'Failed to update record', 'error');
+        showToast(json.error || 'Failed to update', 'error');
       }
     } catch {
-      showToast('Network error updating record', 'error');
+      showToast('Network error updating feedback', 'error');
     }
   });
 
@@ -1075,11 +1044,11 @@ function initModals() {
       const json = await res.json();
       if (json.success) {
         playSound('success');
-        showToast('Official faculty resolution published', 'success');
+        showToast('Faculty response published!', 'success');
         closeReplyModal();
         fetchFeedbacks();
       } else {
-        showToast(json.error || 'Failed to publish response', 'error');
+        showToast(json.error || 'Failed to post reply', 'error');
       }
     } catch {
       showToast('Network error publishing reply', 'error');
@@ -1103,19 +1072,19 @@ function initModals() {
       const json = await res.json();
       if (json.success) {
         playSound('action');
-        showToast('Feedback record permanently deleted', 'info');
+        showToast('Feedback record removed.', 'info');
         closeDeleteModal();
         fetchFeedbacks();
         fetchDashboardStats();
       }
     } catch {
-      showToast('Error deleting record', 'error');
+      showToast('Error deleting feedback', 'error');
     }
   });
 }
 
 window.openEditModal = function (id) {
-  const item = currentFeedbacks.find((f) => f.id === id);
+  const item = currentFeedbacks.find(f => f.id === id);
   if (!item) return;
 
   playSound('click');
@@ -1127,8 +1096,8 @@ window.openEditModal = function (id) {
   document.getElementById('edit-comments').value = item.comments || '';
 
   const btns = document.querySelectorAll('#edit-stars-box .modal-star-btn');
-  btns.forEach((b) => {
-    b.style.color = parseInt(b.dataset.rating, 10) <= item.rating ? '#ffffff' : '#4b5563';
+  btns.forEach(b => {
+    b.style.color = parseInt(b.dataset.rating, 10) <= item.rating ? '#fbbf24' : '#64748b';
   });
 
   const modal = document.getElementById('edit-modal');
@@ -1152,13 +1121,13 @@ window.openDeleteModal = function (id) {
 };
 
 /* ==========================================================================
-   12. MULTI-FORMAT EXPORT SUITE
+   12. MULTI-FORMAT EXPORT SUITE (CSV, JSON, PRINT)
    ========================================================================== */
-function initExportSuite() {
-  const exportBtn = document.getElementById('export-actions-btn');
+function initExportFeatures() {
+  const exportActionsBtn = document.getElementById('export-actions-btn');
   const exportMenu = document.getElementById('export-menu');
 
-  exportBtn?.addEventListener('click', (e) => {
+  exportActionsBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     playSound('click');
     exportMenu?.classList.toggle('show');
@@ -1168,6 +1137,7 @@ function initExportSuite() {
     exportMenu?.classList.remove('show');
   });
 
+  // Direct CSV Downloads
   const downloadCsv = () => {
     playSound('action');
     window.location.href = '/api/feedback/export/csv';
@@ -1177,6 +1147,7 @@ function initExportSuite() {
   document.getElementById('quick-export-csv-btn')?.addEventListener('click', downloadCsv);
   document.getElementById('export-csv-opt')?.addEventListener('click', downloadCsv);
 
+  // Direct JSON Downloads
   const downloadJson = () => {
     playSound('action');
     window.location.href = '/api/feedback/export/json';
@@ -1186,6 +1157,7 @@ function initExportSuite() {
   document.getElementById('quick-export-json-btn')?.addEventListener('click', downloadJson);
   document.getElementById('export-json-opt')?.addEventListener('click', downloadJson);
 
+  // Print Summary
   const printReport = () => {
     playSound('action');
     window.print();
@@ -1196,9 +1168,9 @@ function initExportSuite() {
 }
 
 /* ==========================================================================
-   13. DEVELOPER REST API STUDIO
+   13. INTERACTIVE REST API EXPLORER
    ========================================================================== */
-function initApiStudio() {
+function initApiExplorer() {
   const tabs = document.querySelectorAll('.api-tab');
   const methodBadge = document.getElementById('api-method-badge');
   const urlDisplay = document.getElementById('api-url-display');
@@ -1213,24 +1185,24 @@ function initApiStudio() {
   const endpointConfig = {
     getAll: { method: 'GET', url: '/api/feedback', body: null },
     getStats: { method: 'GET', url: '/api/feedback/stats/summary', body: null },
-    create: {
-      method: 'POST',
-      url: '/api/feedback',
+    create: { 
+      method: 'POST', 
+      url: '/api/feedback', 
       body: JSON.stringify({
-        studentName: "Elena Rostova",
+        studentName: "Mira Sorvino",
         courseCode: "AI402",
         rating: 5,
         category: "Lab Experience",
-        tags: ["#HandsOnLab", "#ClearLectures"],
-        comments: "Transformers and generative modeling labs were world-class."
+        tags: ["#HandsOnLab", "#NeuralNets"],
+        comments: "Transformers workshop was stellar."
       }, null, 2)
     },
     getSingle: { method: 'GET', url: '/api/feedback/1', body: null },
     like: { method: 'POST', url: '/api/feedback/1/like', body: null },
-    reply: {
-      method: 'POST',
-      url: '/api/feedback/1/reply',
-      body: JSON.stringify({ reply: "Thank you for the constructive feedback, Elena." }, null, 2)
+    reply: { 
+      method: 'POST', 
+      url: '/api/feedback/1/reply', 
+      body: JSON.stringify({ reply: "Thank you for the wonderful feedback!" }, null, 2)
     },
     exportCsv: { method: 'GET', url: '/api/feedback/export/csv', body: null },
     health: { method: 'GET', url: '/api/health', body: null }
@@ -1238,10 +1210,10 @@ function initApiStudio() {
 
   let activeEndpoint = 'getAll';
 
-  tabs.forEach((tab) => {
+  tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       playSound('click');
-      tabs.forEach((t) => t.classList.remove('active'));
+      tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
 
       activeEndpoint = tab.dataset.endpoint;
@@ -1249,7 +1221,7 @@ function initApiStudio() {
 
       if (methodBadge) {
         methodBadge.textContent = conf.method;
-        methodBadge.className = `method-tag ${conf.method}`;
+        methodBadge.className = `http-method-badge ${conf.method}`;
       }
       if (urlDisplay) urlDisplay.textContent = conf.url;
 
@@ -1267,7 +1239,7 @@ function initApiStudio() {
     const conf = endpointConfig[activeEndpoint];
     const startTime = performance.now();
 
-    if (responseViewer) responseViewer.textContent = '// Executing request against Voxora REST engine...';
+    if (responseViewer) responseViewer.textContent = '// Sending request to Voxora Quantum API...';
 
     try {
       const options = { method: conf.method, headers: {} };
@@ -1291,8 +1263,8 @@ function initApiStudio() {
       }
       playSound('success');
     } catch (err) {
-      if (responseViewer) responseViewer.textContent = `// Error executing endpoint: ${err.message}`;
-      if (statusCodeElem) statusCodeElem.textContent = '500 Error';
+      if (responseViewer) responseViewer.textContent = `// Error executing request: ${err.message}`;
+      if (statusCodeElem) statusCodeElem.textContent = '500 Server Error';
     }
   });
 
@@ -1305,7 +1277,7 @@ function initApiStudio() {
     }
     navigator.clipboard.writeText(curl);
     playSound('click');
-    showToast('cURL command copied to clipboard', 'info');
+    showToast('cURL command copied to clipboard!', 'info');
   });
 }
 
@@ -1325,11 +1297,11 @@ function showToast(message, type = 'info') {
   container.appendChild(toast);
 
   setTimeout(() => {
-    toast.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+    toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
     toast.style.opacity = '0';
     toast.style.transform = 'translateX(100%)';
-    setTimeout(() => toast.remove(), 250);
-  }, 3200);
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
 }
 
 function escapeHtml(str) {
